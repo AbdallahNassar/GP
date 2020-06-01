@@ -1,7 +1,9 @@
+import './screens/signup_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 import './screens/test_screen.dart';
+import './screens/welcome_screen.dart';
 import './screens/about_screen.dart';
 import './screens/update_image_screen.dart';
 import './screens/picture_details_screen.dart';
@@ -11,9 +13,12 @@ import './screens/options_screen.dart';
 import './screens/home_page_screen.dart';
 import './screens/authentication_screen.dart';
 import './screens/splash_screen.dart';
+import './screens/login_screen.dart';
 
 import './providers/pictures_provider.dart';
 import './providers/authentication_provider.dart';
+
+import './helpers/constants.dart';
 
 void main() => runApp(MyApp());
 
@@ -51,22 +56,24 @@ class MyApp extends StatelessWidget {
       child: Consumer<Authentication>(
         // the 'child' part is to indicate that there's a 'static' part that I wish to NOT re-build.
         builder: (_, authProvider, child) => MaterialApp(
+          // hide the 'debug' banner at the top of the screen
+          debugShowCheckedModeBanner: false,
           title: 'Home Page',
           theme: ThemeData(
-              primarySwatch: Colors.indigo,
-              primaryColor: Colors.indigo,
+              primaryColor: kPrimaryColor,
+              scaffoldBackgroundColor: Colors.white,
               accentColor: Colors.deepOrange[300],
-              textTheme: const TextTheme(
-                  title: const TextStyle(
+              textTheme: TextTheme(
+                  headline6: const TextStyle(
                       fontFamily: 'Cairo',
                       fontSize: 26,
                       fontWeight: FontWeight.bold),
                   button: const TextStyle(color: Colors.white),
-                  subtitle: const TextStyle(
+                  subtitle2: const TextStyle(
                     color: Colors.grey,
                     fontSize: 16,
                   ),
-                  body1: const TextStyle(
+                  bodyText2: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -74,7 +81,7 @@ class MyApp extends StatelessWidget {
                   )),
               appBarTheme: const AppBarTheme(
                   textTheme: const TextTheme(
-                      title: const TextStyle(
+                      headline6: const TextStyle(
                           fontFamily: 'Rochester',
                           fontSize: 21,
                           fontWeight: FontWeight.bold)))),
@@ -96,7 +103,7 @@ class MyApp extends StatelessWidget {
                           // and when the autoLogin is finished .. the 'notifyListeners' will be called and this entire screen
                           // will be rebuilt and the condition 'authProvider.isUserAuth' will be true so I won't render the auth screen.
                           SplashScreen()
-                          : AuthenticationScreen(),
+                          : WelcomeScreen(),
                 ),
 
           // home: TestScreen(),
@@ -112,6 +119,9 @@ class MyApp extends StatelessWidget {
             PictureDetails.routeName: (context) => PictureDetails(),
             UpdatePictureScreen.routeName: (context) => UpdatePictureScreen(),
             AboutScreen.routeName: (context) => AboutScreen(),
+            LoginScreen.routeName: (context) => LoginScreen(),
+            WelcomeScreen.routeName: (context) => WelcomeScreen(),
+            SignUpScreen.routeName: (context) => SignUpScreen(),
           },
 
           // 'onGenerateRoute' is the default 'route' to take for any 'route' or 'screen' that is

@@ -82,6 +82,7 @@ class Authentication with ChangeNotifier {
       else {
         _authenticateUser(
             token: response['idToken'],
+            // tokenExpiry: DateTime.now().add(Duration(days: 365)),
             tokenExpiry: DateTime.now()
                 .add(Duration(seconds: int.parse(response['expiresIn']))),
             userid: response['localId']);
@@ -150,13 +151,13 @@ class Authentication with ChangeNotifier {
     notifyListeners();
     // remove any stored tokens and data from the device to complete the log-out
     final sharedPrefs = await SharedPreferences.getInstance();
-    // // remove certain data
+    // remove certain data
     // sharedPrefs.remove('jsonUserData');
     // remove everything
     sharedPrefs.clear();
   }
 
-  // // to automatically kick out the user when the token expires.
+  //  to automatically kick out the user when the token expires.
   void _autoLogOut() {
     // cancel any pre-existing timer and create a new one at the beginning.
     if (_authTimer != null) {
