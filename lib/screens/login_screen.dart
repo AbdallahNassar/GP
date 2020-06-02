@@ -15,84 +15,86 @@ class LoginScreen extends StatelessWidget {
     // get the device dimensions
     final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(
-        height: deviceSize.height,
-        width: double.infinity,
-        child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            // top left image
-            Positioned(
-              top: 0,
-              left: 0,
-              child: Image.asset(
-                'assets/images/main_top.png',
-                width: deviceSize.width * 0.35,
+      body: SafeArea(
+        child: Container(
+          height: deviceSize.height,
+          width: double.infinity,
+          child: Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              // top left image
+              Positioned(
+                top: 0,
+                left: 0,
+                child: Image.asset(
+                  'assets/images/main_top.png',
+                  width: deviceSize.width * 0.35,
+                ),
               ),
-            ),
-            // bottm right image
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Image.asset(
-                'assets/images/login_bottom.png',
-                width: deviceSize.width * 0.3,
+              // bottm right image
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Image.asset(
+                  'assets/images/login_bottom.png',
+                  width: deviceSize.width * 0.3,
+                ),
               ),
-            ),
-            SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'LOGIN',
-                    style: Theme.of(context).textTheme.headline6.copyWith(
-                          fontSize: 20,
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'LOGIN',
+                      style: Theme.of(context).textTheme.headline6.copyWith(
+                            fontSize: 20,
+                          ),
+                    ),
+                    // sitting giril SVG image
+                    SvgPicture.asset(
+                      'assets/icons/login.svg',
+                      height: deviceSize.height * 0.37,
+                      alignment: Alignment.center,
+                    ),
+                    SizedBox(
+                      height: deviceSize.height * 0.035,
+                    ),
+                    // theis where the authentication logic is handled
+                    LoginScreenForm(),
+                    // =====================================
+                    SizedBox(
+                      height: deviceSize.height * 0.02,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Don\'t have an Account?',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 14,
+                          ),
                         ),
-                  ),
-                  // sitting giril SVG image
-                  SvgPicture.asset(
-                    'assets/icons/login.svg',
-                    height: deviceSize.height * 0.37,
-                    alignment: Alignment.center,
-                  ),
-                  SizedBox(
-                    height: deviceSize.height * 0.035,
-                  ),
-                  // theis where the authentication logic is handled
-                  LoginScreenForm(),
-                  // =====================================
-                  SizedBox(
-                    height: deviceSize.height * 0.02,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Don\'t have an Account?',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 14,
+                        SizedBox(
+                          width: deviceSize.width * 0.02,
                         ),
-                      ),
-                      SizedBox(
-                        width: deviceSize.width * 0.02,
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.of(context)
-                            .pushReplacementNamed(SignUpScreen.routeName),
-                        child: Text('Sign Up',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            )),
-                      )
-                    ],
-                  )
-                ],
+                        GestureDetector(
+                          onTap: () => Navigator.of(context)
+                              .pushReplacementNamed(SignUpScreen.routeName),
+                          child: Text('Sign Up',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                              )),
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

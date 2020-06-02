@@ -1,19 +1,19 @@
+import 'package:ScaniT/widgets/form_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/form_button.dart';
-import '../providers/authentication_provider.dart';
 import '../widgets/form_password_field.dart';
 import '../widgets/form_text_field.dart';
 import '../screens/top_tabs_screen.dart';
 import '../models/custom_http_exception.dart';
+import '../providers/authentication_provider.dart';
 
-class LoginScreenForm extends StatefulWidget {
+class SignUpForm extends StatefulWidget {
   @override
-  _LoginScreenFormState createState() => _LoginScreenFormState();
+  _SignUpFormState createState() => _SignUpFormState();
 }
 
-class _LoginScreenFormState extends State<LoginScreenForm> {
+class _SignUpFormState extends State<SignUpForm> {
   // ========================== class parameters ==========================
   // 'globalKey' to control the 'form' with.
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -22,7 +22,6 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
     'email': '',
     'password': '',
   };
-
   var _isLoading = false;
   final _passwordController = TextEditingController();
   // MUST be disposed of after the form terminates
@@ -39,6 +38,7 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
     super.dispose();
   }
 
+  // show a dialog if there's an error in the authentication process.
   void _showErroDialog({String errorMessage = 'ERROR'}) {
     showDialog(
         context: context,
@@ -67,10 +67,8 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
     });
 
     try {
-      // call the sign up method in the 'authentication' provider .. and 'await' to not
-      // freeze the app .. and I only want to sign up so 'listen' is false;
       await Provider.of<Authentication>(context, listen: false)
-          .mLogin(_authData['email'], _authData['password']);
+          .mSignUp(_authData['email'], _authData['password']);
 
       Navigator.of(context).pushReplacementNamed(TopTabsScreen.routeName);
       // to check if I get a specific kind of error/exception rather than check for any error/exception.
@@ -93,6 +91,7 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
     } catch (error) {
       const String errorMessage =
           'Could not authenticate you. Please try again later.';
+      print('Error  Message @ auth card: $errorMessage');
       _showErroDialog(errorMessage: errorMessage);
     }
 
@@ -101,18 +100,14 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
     });
   }
 
-  // ======================================================================
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
         children: <Widget>[
-          // special looking form text field
           FormTextField(
-            authData: _authData,
-            passwordFocusNode: _passwordFocusNode,
-          ),
+              authData: _authData, passwordFocusNode: _passwordFocusNode),
           FormPasswordField(
             authData: _authData,
             hint: 'Password',
@@ -120,8 +115,15 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
             passwordFocusNode: _passwordFocusNode,
             confirmPasswordFocusNode: _confirmPasswordFocusNode,
           ),
+          FormPasswordField(
+            authData: _authData,
+            hint: 'Confirm Password',
+            passwordController: _passwordController,
+            passwordFocusNode: _passwordFocusNode,
+            confirmPasswordFocusNode: _confirmPasswordFocusNode,
+          ),
           FormButton(
-            text: 'LOGIN',
+            text: 'SIGNUP',
             isLoading: _isLoading,
             submitMethod: _submit,
           ),

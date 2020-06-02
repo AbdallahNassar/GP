@@ -1,30 +1,15 @@
 import 'package:flutter/material.dart';
 
-class FormTextField extends StatefulWidget {
+class FormTextField extends StatelessWidget {
   // ========================== class parameters ==========================
-  final Map<String, String> _authData;
+  final Map<String, String> authData;
+  final FocusNode passwordFocusNode;
   // ========================== class constructor ==========================
   const FormTextField({
-    Key key,
-    @required Map<String, String> authData,
-  })  : _authData = authData,
-        super(key: key);
-  // ======================================================================
+    @required this.authData,
+    @required this.passwordFocusNode,
+  });
 
-  @override
-  _FormTextFieldState createState() => _FormTextFieldState();
-}
-
-class _FormTextFieldState extends State<FormTextField> {
-  // ========================== class parameters ==========================
-  final FocusNode _passwordFocusNode = FocusNode();
-
-  // ========================== class methods ==========================
-  @override
-  void dispose() {
-    _passwordFocusNode.dispose();
-    super.dispose();
-  }
   // ======================================================================
 
   @override
@@ -61,11 +46,11 @@ class _FormTextFieldState extends State<FormTextField> {
         },
         // save the data in the template I created at the beginning of this widget;
         onSaved: (value) {
-          widget._authData['email'] = value.trim();
+          authData['email'] = value.trim();
         },
         // this allows me to go to the specified 'foucsNode' when I submit this text field.
         onFieldSubmitted: (_) =>
-            FocusScope.of(context).requestFocus(_passwordFocusNode),
+            FocusScope.of(context).requestFocus(passwordFocusNode),
       ),
     );
   }

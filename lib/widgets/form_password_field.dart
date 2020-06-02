@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 
 class FormPasswordField extends StatefulWidget {
   // ========================== class parameters ==========================
-  final Map<String, String> _authData;
+  final Map<String, String> authData;
+  final String hint;
+  final passwordController;
+  final passwordFocusNode;
+  final confirmPasswordFocusNode;
   // ========================== class constructor ==========================
   const FormPasswordField({
-    Key key,
-    @required Map<String, String> authData,
-  })  : _authData = authData,
-        super(key: key);
+    this.authData,
+    this.hint,
+    this.confirmPasswordFocusNode,
+    this.passwordController,
+    this.passwordFocusNode,
+  });
   // ======================================================================
 
   @override
@@ -18,17 +24,6 @@ class FormPasswordField extends StatefulWidget {
 class _FormPasswordFieldState extends State<FormPasswordField> {
   // ========================== class parameters ==========================
   var _hidePassword = true;
-  final _passwordController = TextEditingController();
-  // MUST be disposed of after the form terminates
-  final _passwordFocusNode = FocusNode();
-  // ========================== class methods ==========================
-  // dispose of the 'focusNode' at the end.
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _passwordFocusNode.dispose();
-    super.dispose();
-  }
   // ======================================================================
 
   @override
@@ -49,7 +44,7 @@ class _FormPasswordFieldState extends State<FormPasswordField> {
             Icons.lock,
             color: Theme.of(context).primaryColor,
           ),
-          hintText: 'Password',
+          hintText: widget.hint,
           hintStyle: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -68,19 +63,34 @@ class _FormPasswordFieldState extends State<FormPasswordField> {
         ),
         // to show the password as 'Rounded Bold Dots'.
         obscureText: _hidePassword,
-        textInputAction: TextInputAction.done,
-        controller: _passwordController,
-        focusNode: _passwordFocusNode,
+        textInputAction: (widget.hint == 'Password')
+            ? TextInputAction.next
+            : TextInputAction.done,
+        controller:
+            (widget.hint == 'Password') ? widget.passwordController : null,
+        focusNode: (widget.hint == 'Password')
+            ? widget.passwordFocusNode
+            : widget.confirmPasswordFocusNode,
         validator: (value) {
-          if (value.isEmpty || value.length < 5) {
-            return 'Password is too short!';
+          if (widget.hint == 'Password') {
+            if (value.isEmpty || value.length < 5) {
+              return 'Password is too short!';
+            }
+          } else {
+            if (value != widget.passwordController.text) {
+              return 'Passwords do not match!';
+            }
           }
           // everything is good .. so return NULL .. that's how the validator works.
           return null;
         },
         onSaved: (value) {
-          widget._authData['password'] = value.trim();
+          widget.authData['password'] = value.trim();
         },
+        onFieldSubmitted: widget.hint != 'Password'
+            ? null
+            : (_) => FocusScope.of(context)
+                .requestFocus(widget.confirmPasswordFocusNode),
       ),
     );
   }
