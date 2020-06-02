@@ -1,7 +1,9 @@
-import './screens/signup_screen.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import './providers/pictures_provider.dart';
+import './providers/authentication_provider.dart';
 
+import './screens/signup_screen.dart';
 import './screens/test_screen.dart';
 import './screens/welcome_screen.dart';
 import './screens/about_screen.dart';
@@ -11,14 +13,8 @@ import './screens/favourites_screen.dart';
 import './screens/top_tabs_screen.dart';
 import './screens/options_screen.dart';
 import './screens/home_page_screen.dart';
-import './screens/authentication_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/login_screen.dart';
-
-import './providers/pictures_provider.dart';
-import './providers/authentication_provider.dart';
-
-import './helpers/constants.dart';
 
 void main() => runApp(MyApp());
 
@@ -60,7 +56,8 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Home Page',
           theme: ThemeData(
-              primaryColor: kPrimaryColor,
+              primaryColor: Color(0xFF6F35A5),
+              primaryColorLight: Color(0xFFF1E6FF),
               scaffoldBackgroundColor: Colors.white,
               accentColor: Colors.deepOrange[300],
               textTheme: TextTheme(
