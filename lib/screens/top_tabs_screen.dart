@@ -1,4 +1,5 @@
 import 'package:ScaniT/widgets/custom_app_drawer.dart';
+import 'package:flutter/services.dart';
 import '../screens/update_image_screen.dart';
 import '../screens/favourites_screen.dart';
 import '../screens/home_page_screen.dart';
@@ -8,6 +9,13 @@ class TopTabsScreen extends StatelessWidget {
   static const routeName = '/top-tabs';
   @override
   Widget build(BuildContext context) {
+    // to allow any device orientation after it was locked to PORTRAIT in 'Sign' Screen
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     //'DefaultTabController' to create my tabs under the 'appbar'
     // it will AUTOMOATICALLY link the 'tab' you pressed with it's corresponding 'screen'
     // in the 'tabbarview' bellow , everything is done behind the scenes .. you just have to

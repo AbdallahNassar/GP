@@ -19,10 +19,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  # to allow the usge of writing/reading from user device storage.
+  shared_preferences: ^0.5.6+3
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+  firebase_auth: ^0.16.1
+  google_sign_in: ^4.5.1
 
 dev_dependencies:
   flutter_test:
@@ -35,8 +38,6 @@ dev_dependencies:
   intl: ^0.16.1
   # to allow the usage of dataBases
   http: ^0.12.0+4
-  # to allow the usge of writing/reading from user device storage.
-  shared_preferences: ^0.5.6+3
   # to allow the usage of 'Scalable Vector Graphics' image format
   flutter_svg: ^0.17.4
 

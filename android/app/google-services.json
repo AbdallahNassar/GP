@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "377233254535",
+    "firebase_url": "https://gp-scanit.firebaseio.com",
+    "project_id": "gp-scanit",
+    "storage_bucket": "gp-scanit.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377233254535:android:3331fbee9f629751a73022",
+        "android_client_info": {
+          "package_name": "com.kayanne.scanit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "377233254535-sbo0ucq0hms6tqd1dlviebq7rjep9ce6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kayanne.scanit",
+            "certificate_hash": "7a8e3c6422e4d1471c8e6022ee42db740fac0503"
+          }
+        },
+        {
+          "client_id": "377233254535-pakgpds2b3adtk7ipbncl437pjgev24m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9Ioa51ntBRPscSU0nTkWa3w_zU7obejs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "377233254535-pakgpds2b3adtk7ipbncl437pjgev24m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

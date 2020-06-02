@@ -64,4 +64,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    // [Nassar] to enabe google analytics
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
 }
+
+//  [Nassar] to enable firebase usage
+apply plugin: 'com.google.gms.google-services'

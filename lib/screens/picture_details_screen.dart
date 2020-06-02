@@ -11,6 +11,7 @@ class PictureDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
     // 'modalRoute' to extract the Arguments passed via the routes
     final routeArgument = ModalRoute.of(context).settings.arguments as String;
 
@@ -44,10 +45,13 @@ class PictureDetails extends StatelessWidget {
         child: Column(children: [
           Container(
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: Image.asset(
-              pictureData.imageURI,
-              fit: BoxFit.cover,
+            height: deviceSize.height * 0.4,
+            child: Hero(
+              tag: pictureData.id,
+              child: Image.asset(
+                pictureData.imageURI,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           SizedBox(
@@ -58,6 +62,7 @@ class PictureDetails extends StatelessWidget {
             width: double.infinity,
             child: Text(
               pictureData.extractedText,
+              style: TextStyle(color: Colors.black),
               textAlign: TextAlign.center,
               softWrap: true,
             ),

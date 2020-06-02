@@ -53,9 +53,6 @@ class SignUpScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(
-                        height: deviceSize.height * 0.05,
-                      ),
                       Text(
                         'SIGNUP',
                         style: TextStyle(
@@ -64,11 +61,11 @@ class SignUpScreen extends StatelessWidget {
                       ),
                       SvgPicture.asset(
                         'assets/icons/signup.svg',
-                        height: deviceSize.height * 0.20,
+                        height: deviceSize.height * 0.2,
                         alignment: Alignment.center,
                       ),
                       SizedBox(
-                        height: deviceSize.height * 0.035,
+                        height: deviceSize.height * 0.02,
                       ),
                       SignUpForm(),
                       SizedBox(

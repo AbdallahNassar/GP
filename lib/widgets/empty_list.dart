@@ -9,7 +9,7 @@ class EmptyList extends StatelessWidget {
   // ========================== class parameters ==========================
   final String title;
 
-  // ========================== class parameters ==========================
+  // ========================== class constructor ==========================
   const EmptyList({this.title});
   // ======================================================================
 

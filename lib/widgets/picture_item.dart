@@ -33,9 +33,12 @@ class PictureItem extends StatelessWidget {
         child: GestureDetector(
           onTap: () => Navigator.of(context)
               .pushNamed(PictureDetails.routeName, arguments: picture.id),
-          child: Image.asset(
-            picture.imageURI,
-            fit: BoxFit.contain,
+          child: Hero(
+            tag: picture.id,
+            child: Image.asset(
+              picture.imageURI,
+              fit: BoxFit.contain,
+            ),
           ),
         ),
 
@@ -67,13 +70,14 @@ class PictureItem extends StatelessWidget {
 
           // 'trailing' is the most right element in the bar
           // show the 'delete button' only in the 'home screen'
-          trailing: ModalRoute.of(context).settings.name.toString() == '/'
-              ? CustomDeleteIcon(
-                  picture: picture,
-                  savedScaffold: savedScaffold,
-                  savedTheme: savedTheme,
-                )
-              : null,
+          trailing:
+              ModalRoute.of(context).settings.name.toString() == '/top-tabs'
+                  ? CustomDeleteIcon(
+                      picture: picture,
+                      savedScaffold: savedScaffold,
+                      savedTheme: savedTheme,
+                    )
+                  : null,
         ),
       ),
     );
