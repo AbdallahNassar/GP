@@ -71,7 +71,8 @@ class PictureItem extends StatelessWidget {
           // 'trailing' is the most right element in the bar
           // show the 'delete button' only in the 'home screen'
           trailing:
-              ModalRoute.of(context).settings.name.toString() == '/top-tabs'
+              ModalRoute.of(context).settings.name.toString() == '/top-tabs' ||
+                      ModalRoute.of(context).settings.name.toString() == '/'
                   ? CustomDeleteIcon(
                       picture: picture,
                       savedScaffold: savedScaffold,

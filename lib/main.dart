@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: Authentication()),
         // 'ProxyProvider' creates a 'provider' which depends on another 'provider'.. defined BEFORE this one.
         ChangeNotifierProxyProvider<Authentication, Pictures>(
+            // create: (_) => Provider.of<Pictures>(context),
             update: (_, authProvider, prevPics) => Pictures(
                 userPictures: prevPics == null ? [] : prevPics.pictureList,
                 authToken: authProvider.authToken,

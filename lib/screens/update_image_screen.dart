@@ -341,11 +341,9 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                               _imageURLFieldController.text.isEmpty
                                   ? Text('Enter a URL',
                                       textAlign: TextAlign.center)
-                                  : FittedBox(
-                                      child: Image.asset(
-                                        _imageURLFieldController.text,
-                                        fit: BoxFit.cover,
-                                      ),
+                                  : Image.asset(
+                                      _imageURLFieldController.text,
+                                      fit: BoxFit.contain,
                                     ),
                         ),
                         SizedBox(
