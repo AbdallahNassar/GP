@@ -4,6 +4,7 @@ import '../screens/update_image_screen.dart';
 import '../screens/favourites_screen.dart';
 import '../screens/home_page_screen.dart';
 import 'package:flutter/material.dart';
+import '../helpers/globals.dart';
 
 class TopTabsScreen extends StatelessWidget {
   static const routeName = '/top-tabs';
@@ -27,6 +28,10 @@ class TopTabsScreen extends StatelessWidget {
       initialIndex: 0,
       // 'scaffold' because the 'tabs' screen will return a page or 'screen' in the end
       child: Scaffold(
+        //  a GlobalKey to associate it with this Scaffold widget,
+        // and use the context from this widget's key when creating the dialog
+        // to corrctoly handle pictrue deletion and restoration.
+        key: myGlobals.scaffoldKey,
         drawer: CustomAppDrawer(),
         appBar: AppBar(
           title: Text('ScaniT'),

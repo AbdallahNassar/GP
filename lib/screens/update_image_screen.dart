@@ -182,9 +182,9 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
       if (extractedText.isEmpty) {
         return 'Please enter a extractedText.';
       }
-      if (extractedText.length < 10) {
+      if (extractedText.length < 1) {
         print(extractedText);
-        return 'extractedText should be at least 10 characters long.';
+        return 'extractedText should be at least 1 characters long.';
       }
       return null;
     }
@@ -363,7 +363,10 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                             focusNode: _imageURLFieldFocusNode,
 
                             toolbarOptions: ToolbarOptions(
-                                paste: true, copy: true, cut: true),
+                                paste: true,
+                                copy: true,
+                                cut: true,
+                                selectAll: true),
                             onSaved: (newValue) =>
                                 _pictureTemplate = _mOverWritepicture(
                               imageUrl: newValue,
@@ -377,7 +380,9 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                       height: 20,
                     ),
                     if (_isLoading)
-                      CircularProgressIndicator(),
+                      CircularProgressIndicator(
+                        backgroundColor: Theme.of(context).primaryColor,
+                      ),
                     SizedBox(
                       height: 40,
                     ),

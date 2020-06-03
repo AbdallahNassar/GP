@@ -1,3 +1,5 @@
+import 'package:ScaniT/helpers/globals.dart';
+
 import '../providers/picture_provider.dart';
 import '../providers/pictures_provider.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +37,7 @@ class CustomDeleteIcon extends StatelessWidget {
           // show the confirmation Dialogue.
           //'await' to wait for the user response befor I move on.
           final answer = await showDialog(
-              context: context,
+              context: myGlobals.scaffoldKey.currentContext,
               // the shown dialog will be an 'alert Dialog'
               builder: (_) => AlertDialog(
                     titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -122,11 +124,16 @@ class CustomDeleteIcon extends StatelessWidget {
                     ? null
                     : SnackBarAction(
                         label: 'Undo',
-                        onPressed: () =>
-                            Provider.of<Pictures>(context, listen: false)
-                                .mAddPicture(
-                                    picture: picture, identifier: 'Restore'),
-                      ),
+                        onPressed: () async {
+                          print('start trying to resotre @ custom_dele_icon');
+                          await Provider.of<Pictures>(
+                                  myGlobals.scaffoldKey.currentContext,
+                                  listen: false)
+                              .mAddPicture(
+                                  picture: picture, identifier: 'Restore');
+                          print(
+                              'finished trying to resotre @ custom_dele_icon');
+                        }),
               ));
             }
           }

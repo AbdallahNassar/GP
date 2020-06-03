@@ -46,9 +46,6 @@ class Picture with ChangeNotifier {
       final response = await http.put(dataBaseUrl, body: jsonProduct);
 
       if (response.statusCode >= 400) {
-        print(response.body);
-        print(userID);
-
         // there's an error .. roll back the changes.
         isFavourite = !isFavourite;
         // to notify all the 'listeners' that something has changed and that they should rebuild.

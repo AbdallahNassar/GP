@@ -37,7 +37,7 @@ class PictureItem extends StatelessWidget {
             tag: picture.id,
             child: Image.asset(
               picture.imageURI,
-              fit: BoxFit.contain,
+              fit: BoxFit.cover,
             ),
           ),
         ),

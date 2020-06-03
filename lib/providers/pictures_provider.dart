@@ -1,8 +1,10 @@
-import '../models/custom_http_exception.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+
+import '../models/custom_http_exception.dart';
 import './picture_provider.dart';
 
 // 'with' key words is a 'lite inheretence' as your get some of the properties of another class
@@ -102,7 +104,9 @@ class Pictures with ChangeNotifier {
     }
   }
 
-  Future<void> mAddPicture({picture, String identifier = 'Add'}) async {
+  Future<void> mAddPicture({Picture picture, String identifier = 'Add'}) async {
+    print('entered ADD PICTURE');
+    print(picture.id);
     // the following code will be for 'http' requests .. to 'post' data into a database
     // through it's 'webserver' .. 'webserver' will be the middle man between the database and I.
     // 'collection' is a kinda of a 'folder' inside my database.
@@ -120,6 +124,12 @@ class Pictures with ChangeNotifier {
       'title': picture.title,
     });
 
+    // if I want to restore a deleted picture .. I should also restore it's favourite status
+    var oldFavStat = false;
+    if (identifier != 'Add') {
+      oldFavStat = await mWasPicFav(id: picture.id);
+      print(oldFavStat);
+    }
     // 'http' is a library that I manually included in 'pubspec.yaml'
     // 'post' returns a 'future' after it's DONE executed .. this fucntion needs to return a 'future'
     //  when it's done so that the loading spinner disappears and the 'screen' can 'pop'.
@@ -135,10 +145,13 @@ class Pictures with ChangeNotifier {
       final newPicture = Picture(
         // 'name' is a map entry (in reponse body , which is a map) that has a unique random string that
         // 'firebase' generates for every item .. so I'll use that as the picture's ID.
-        id: json.decode(response.body)['name'],
+        id: (identifier == 'Add')
+            ? json.decode(response.body)['name']
+            : picture.id,
         extractedText: picture.extractedText,
         imageURI: picture.imageURI,
         title: picture.title,
+        isFavourite: oldFavStat,
       );
       if (identifier == 'Add')
         userPictures.insert(0, newPicture);
@@ -187,6 +200,7 @@ class Pictures with ChangeNotifier {
   Future<void> mDeletePicture({picID}) async {
     _lastDeletedPictureIndex =
         userPictures.indexWhere((item) => item.id == picID);
+
     var _storedInMemoryPicture = userPictures[_lastDeletedPictureIndex];
     userPictures.removeAt(_lastDeletedPictureIndex);
     notifyListeners();
@@ -210,6 +224,24 @@ class Pictures with ChangeNotifier {
     } else
       // the deletion from the database is successful so I should also delete the item from memory.
       _storedInMemoryPicture = null;
+  }
+
+  // if I want to restore a deleted picture .. I should also restore it's favourite status
+  Future<bool> mWasPicFav({id}) async {
+    // setup the database connection
+    const String collectionName = 'favourites';
+    final String dataBaseUrl =
+        'https://gp-scanit.firebaseio.com/$collectionName/$userID.json?auth=$authToken';
+    // check to see if the user had any favourites and if so then what was the deleted pic's fav status
+    final jsonFavResponse = await http.get(dataBaseUrl);
+    final favResponse = json.decode(jsonFavResponse.body);
+    // do logic based on what you get
+    final bool oldFavStat =
+        favResponse == null ? false : favResponse[id] ?? false;
+    // if (oldFavStat == false){
+    //   Provider.of<Picture>(context,listen:false)
+    // }
+    return oldFavStat;
   }
 
   // we define this function because we want to move as much of the providing logic
