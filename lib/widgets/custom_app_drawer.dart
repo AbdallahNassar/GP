@@ -1,4 +1,6 @@
+import 'package:ScaniT/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/drawer_item_model.dart';
 import '../screens/top_tabs_screen.dart';
@@ -9,6 +11,7 @@ import './drawer_item.dart';
 
 class CustomAppDrawer extends StatelessWidget {
   // ========================== class parameters ==========================
+
   final drawerItemList = [
     AppDrawerItemModel(
         title: 'Home',
@@ -31,6 +34,11 @@ class CustomAppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userPicUri =
+        Provider.of<Authentication>(context, listen: false).userPicURI;
+    final userName =
+        Provider.of<Authentication>(context, listen: false).userName ?? '';
+    // print(userName[0].toUpperCase() + userName.substring(1));
     // to register what's the current screeen I was viewing before I pressed on the app drawer
     // so that If I press on the same screen that I'm already in .. I simply pop the app drawer
     final callerRoute = ModalRoute.of(context).settings.name.toString();
@@ -40,12 +48,14 @@ class CustomAppDrawer extends StatelessWidget {
         child: Column(children: <Widget>[
       // 'appbar' at the top of the 'drawer'
       AppBar(
-        title: const Text('Drawer!'),
+        title: Text('Hello $userName!'),
         // to view the 'image' of the user.
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundImage: AssetImage('assets/images/empty_list.png'),
+            backgroundImage: userPicUri != null
+                ? NetworkImage(userPicUri)
+                : AssetImage('assets/images/empty_list.png'),
           ),
         ),
         // to remove the 'drawer' from the 'drawer' :'''''D

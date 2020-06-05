@@ -105,8 +105,7 @@ class Pictures with ChangeNotifier {
   }
 
   Future<void> mAddPicture({Picture picture, String identifier = 'Add'}) async {
-    print('entered ADD PICTURE');
-    print(picture.id);
+    print(authToken);
     // the following code will be for 'http' requests .. to 'post' data into a database
     // through it's 'webserver' .. 'webserver' will be the middle man between the database and I.
     // 'collection' is a kinda of a 'folder' inside my database.

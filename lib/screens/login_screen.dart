@@ -1,3 +1,5 @@
+import 'package:ScaniT/widgets/api_sign.dart';
+import 'package:ScaniT/widgets/or_divider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -53,7 +55,7 @@ class LoginScreen extends StatelessWidget {
                     // sitting giril SVG image
                     SvgPicture.asset(
                       'assets/icons/login.svg',
-                      height: deviceSize.height * 0.37,
+                      height: deviceSize.height * 0.3,
                       alignment: Alignment.center,
                     ),
                     SizedBox(
@@ -89,7 +91,12 @@ class LoginScreen extends StatelessWidget {
                               )),
                         )
                       ],
-                    )
+                    ),
+                    SizedBox(
+                      height: deviceSize.height * 0.02,
+                    ),
+                    ORDivider(),
+                    APISign()
                   ],
                 ),
               ),

@@ -11,7 +11,6 @@ class PictureDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize = MediaQuery.of(context).size;
     // 'modalRoute' to extract the Arguments passed via the routes
     final routeArgument = ModalRoute.of(context).settings.arguments as String;
 
@@ -28,21 +27,6 @@ class PictureDetails extends StatelessWidget {
 
     // 'safearea' to respect any notches or shoit
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(pictureData.title),
-      //   actions: <Widget>[
-      //     IconButton(
-      //       icon: Icon(
-      //         Icons.border_color,
-      //         color: Theme.of(context).textTheme.button.color,
-      //       ),
-      //       onPressed: () => Navigator.of(context).pushNamed(
-      //           UpdatePictureScreen.routeName,
-      //           arguments: pictureData),
-      //     )
-      //   ],
-      // ),
-      // 'CustomScrollView' instead of 'singlechildScrollView' to help with the 'Sliver' scrolling.
       body: CustomScrollView(
         // A list of 'widgets' to scroll through
         slivers: <Widget>[

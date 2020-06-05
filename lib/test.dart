@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-
 void main(List<String> args) {
-  print('adfs');
+  var x = 'and';
+  x = x[0].toUpperCase() + x.substring(1);
+  print(x);
 }
