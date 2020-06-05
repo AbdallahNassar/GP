@@ -35,8 +35,9 @@ class PictureItem extends StatelessWidget {
               .pushNamed(PictureDetails.routeName, arguments: picture.id),
           child: Hero(
             tag: picture.id,
-            child: Image.asset(
-              picture.imageURI,
+            child: FadeInImage(
+              placeholder: AssetImage('assets/images/oops.jpg'),
+              image: AssetImage(picture.imageURI),
               fit: BoxFit.cover,
             ),
           ),
