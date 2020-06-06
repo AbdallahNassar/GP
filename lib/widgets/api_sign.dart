@@ -10,13 +10,15 @@ class APISign extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         InkWell(
-          onTap: () async =>
-              await Provider.of<Authentication>(context, listen: false)
-                  .mAPILogin(identifier: 'singInWithGoogle'),
+          onTap: () async {
+            await Provider.of<Authentication>(context, listen: false)
+                .mAPILogin(identifier: 'singInWithGoogle');
+          },
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 12),
             padding: const EdgeInsets.all(15),
@@ -31,10 +33,14 @@ class APISign extends StatelessWidget {
             ),
           ),
         ),
+        SizedBox(
+          width: deviceSize.width * .03,
+        ),
         InkWell(
-          onTap: () async =>
-              await Provider.of<Authentication>(context, listen: false)
-                  .mAPILogin(identifier: 'singInWithFacebook'),
+          onTap: () async {
+            await Provider.of<Authentication>(context, listen: false)
+                .mAPILogin(identifier: 'singInWithFacebook');
+          },
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 12),
             padding: const EdgeInsets.all(15),
@@ -49,24 +55,6 @@ class APISign extends StatelessWidget {
             ),
           ),
         ),
-        InkWell(
-          onTap: () async =>
-              await Provider.of<Authentication>(context, listen: false)
-                  .mAPILogin(identifier: 'singInWithGoogle'),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-                border: Border.all(
-                    color: Theme.of(context).primaryColorLight, width: 2),
-                shape: BoxShape.circle),
-            child: SvgPicture.asset(
-              'assets/icons/twitter.svg',
-              height: 20,
-              width: 20,
-            ),
-          ),
-        )
       ],
     );
   }

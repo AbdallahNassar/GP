@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--[Nassar] This file was added  as a step in enabling Facebook sign in-->
+
+<resources>
+    <string name="app_name">ScaniT</string>
+    <string name="facebook_app_id">254881215822682</string>
+    <string name="fb_login_protocol_scheme">fb254881215822682</string>
+</resources>

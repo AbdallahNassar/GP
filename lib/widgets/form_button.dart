@@ -33,7 +33,11 @@ class FormButton extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
                 padding:
                     const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                onPressed: () => submitMethod(),
+                onPressed: () {
+                  // to dismiss the keyboard
+                  FocusScope.of(context).unfocus();
+                  submitMethod();
+                },
                 child: Text(
                   text,
                   style: TextStyle(color: Colors.white),

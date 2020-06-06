@@ -20,7 +20,7 @@ class Pictures with ChangeNotifier {
   // should not be changed from outside of this class .. a 'private' object as to say.
 
   //to be used in restoring the deleted picture when the user presses on the 'undo' button.
-  var _lastDeletedPictureIndex;
+  var _lastDeletedPictureIndex = -1;
   List<Picture> userPictures = [];
 
   // 'get' is for any outside class to access my object (PictureList) because it is PRIVATE
@@ -50,6 +50,8 @@ class Pictures with ChangeNotifier {
   // 'async' to not freeze the application while I'm waiting for this function to finish as all the method
   // body 'the function body' will AUTOMATICALLY be wrapped in a 'future' and also return a 'future'.
   Future<void> mFetchData() async {
+    print('fetching pics');
+    if (authToken == null) return;
     // all the following is specific to 'firebase' only and may be totally different on other DataBAses.
     // 'url' is the databaseHandler or Pointer .. that I will talk to the database's webserver through.
     // '?' marks the beginning of all the optional parameters .. 'auth=' to supply the authentication token
