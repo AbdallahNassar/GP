@@ -81,6 +81,8 @@ class WelcomeScreen extends StatelessWidget {
                     SizedBox(
                       height: deviceSize.height * 0.05,
                     ),
+                    // I could have used the buttom from login screen, but it's almost
+                    // the same number of lines, so.
                     Container(
                       margin: const EdgeInsets.symmetric(vertical: 7.0),
                       width: deviceSize.width * 0.8,

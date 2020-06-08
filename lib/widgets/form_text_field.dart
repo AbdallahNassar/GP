@@ -18,12 +18,16 @@ class FormTextField extends StatelessWidget {
     final deviceSize = MediaQuery.of(context).size;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 7.0),
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
       width: deviceSize.width * 0.8,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: Theme.of(context).primaryColorLight),
       child: TextFormField(
+        style: Theme.of(context)
+            .textTheme
+            .headline1
+            .copyWith(fontSize: 17, letterSpacing: 0.5),
         cursorColor: Theme.of(context).primaryColor,
         enableInteractiveSelection: true,
         decoration: InputDecoration(

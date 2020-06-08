@@ -20,7 +20,7 @@ class Pictures with ChangeNotifier {
   // should not be changed from outside of this class .. a 'private' object as to say.
 
   //to be used in restoring the deleted picture when the user presses on the 'undo' button.
-  var _lastDeletedPictureIndex;
+  var _lastDeletedPictureIndex = -1;
   List<Picture> userPictures = [];
 
   // 'get' is for any outside class to access my object (PictureList) because it is PRIVATE
@@ -105,7 +105,6 @@ class Pictures with ChangeNotifier {
   }
 
   Future<void> mAddPicture({Picture picture, String identifier = 'Add'}) async {
-    print(authToken);
     // the following code will be for 'http' requests .. to 'post' data into a database
     // through it's 'webserver' .. 'webserver' will be the middle man between the database and I.
     // 'collection' is a kinda of a 'folder' inside my database.

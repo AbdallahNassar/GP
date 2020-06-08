@@ -1,6 +1,7 @@
 import 'package:ScaniT/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../models/drawer_item_model.dart';
 import '../screens/top_tabs_screen.dart';
@@ -34,10 +35,10 @@ class CustomAppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userPicUri =
-        Provider.of<Authentication>(context, listen: false).userPicURI;
-    final userName =
-        Provider.of<Authentication>(context, listen: false).userName ?? '';
+    final authProvider = Provider.of<Authentication>(context, listen: false);
+    final userName = authProvider.userName[0].toUpperCase() +
+        authProvider.userName.substring(1);
+
     // print(userName[0].toUpperCase() + userName.substring(1));
     // to register what's the current screeen I was viewing before I pressed on the app drawer
     // so that If I press on the same screen that I'm already in .. I simply pop the app drawer
@@ -53,9 +54,7 @@ class CustomAppDrawer extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundImage: userPicUri != null
-                ? NetworkImage(userPicUri)
-                : AssetImage('assets/images/empty_list.png'),
+            backgroundImage: AssetImage('assets/images/avatar.png'),
           ),
         ),
         // to remove the 'drawer' from the 'drawer' :'''''D

@@ -1,3 +1,4 @@
+import '../screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,13 +16,10 @@ class DrawerItem extends StatelessWidget {
   // -============================= Class Methods =============================-
   // '_' at the beginning of the name to indicate that this is a private method
   // and should not be called from outside of this class.
-  void _handleLogout(context) {
-    // to exit the current state and screen before exiting .. so that I avoid the down
-    // sides of the 'hard exit' and not anget the compilor :'D
-    Navigator.of(context).pop();
-    // to always end up on the 'authentication' screen when we logout.
-    Navigator.of(context).pushReplacementNamed('/');
-    Provider.of<Authentication>(context, listen: false).mLogOut();
+  void _handleLogout(context, itemTitle) {
+    Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
+    final authProvider = Provider.of<Authentication>(context, listen: false);
+    authProvider.mLogOut();
   }
 
   // -=============================================================================-
@@ -41,7 +39,7 @@ class DrawerItem extends StatelessWidget {
             onTap: () {
               // handle 'log Out' action has special treatment
               if (drawerItem.title == 'Log Out') {
-                _handleLogout(context);
+                _handleLogout(context, drawerItem.title);
                 // hanlde a normal action
               } else {
                 // to check what's the current screeen I was viewing before I pressed on the app drawer

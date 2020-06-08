@@ -279,6 +279,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                           ? null
                           : _pictureTemplate.title,
                       keyboardType: TextInputType.text,
+                      style: Theme.of(context).textTheme.headline6,
                       decoration: InputDecoration(
                         // the 'Hint' shown above the text filed input
                         labelText: 'Title',
@@ -301,6 +302,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                       height: 8.0,
                     ),
                     TextFormField(
+                      style: Theme.of(context).textTheme.headline6,
                       initialValue: _pictureTemplate == null
                           ? null
                           : _pictureTemplate.extractedText,
@@ -353,6 +355,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                         // cannot have an unbounded width .. and it's inside of a 'Row' so..
                         Expanded(
                           child: TextFormField(
+                            style: Theme.of(context).textTheme.headline6,
                             // initialValue: routeArgument.imageUrl == null ? 'HE' :  routeArgument.imageUrl,
                             decoration: InputDecoration(labelText: 'ImageURL'),
                             keyboardType: TextInputType.url,
