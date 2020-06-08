@@ -60,8 +60,8 @@ class Authentication with ChangeNotifier {
   void _authenticateUser({token, userId, userPic, userName}) {
     _authToken = token;
     _userID = userId;
-    _userName = userName;
-    _userPicURI = userPic;
+    _userName = userName ?? 'there';
+    _userPicURI = userPic ?? 'assets/images/avatar.png';
     notifyListeners();
   }
 

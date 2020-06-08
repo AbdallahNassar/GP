@@ -1,0 +1,12 @@
+[33m9906546[m[33m ([m[1;36mHEAD -> [m[1;32mbranch1[m[33m, [m[1;31morigin/branch1[m[33m)[m added facebook signin
+[33m57a0082[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m added Google sign in
+[33mc8a0ed4[m safety commit #2
+[33m1b92761[m fixed the goddamn delete problem
+[33mcc0186f[m safety commit #1
+[33m53aec23[m added HERO and set the scene for G/f/t auth.
+[33mb403f9a[m signup screen refactored
+[33m1764829[m Welcome-Login Screen Refactored.
+[33m4cd4bbc[m welcome,login,signup screens = functional
+[33m53dda2b[m added welcome,login,signup pages
+[33mcd17e09[m Continue
+[33m64e41f0[m Initial commit

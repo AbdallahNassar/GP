@@ -50,8 +50,6 @@ class Pictures with ChangeNotifier {
   // 'async' to not freeze the application while I'm waiting for this function to finish as all the method
   // body 'the function body' will AUTOMATICALLY be wrapped in a 'future' and also return a 'future'.
   Future<void> mFetchData() async {
-    print('fetching pics');
-    if (authToken == null) return;
     // all the following is specific to 'firebase' only and may be totally different on other DataBAses.
     // 'url' is the databaseHandler or Pointer .. that I will talk to the database's webserver through.
     // '?' marks the beginning of all the optional parameters .. 'auth=' to supply the authentication token
@@ -107,7 +105,6 @@ class Pictures with ChangeNotifier {
   }
 
   Future<void> mAddPicture({Picture picture, String identifier = 'Add'}) async {
-    print(authToken);
     // the following code will be for 'http' requests .. to 'post' data into a database
     // through it's 'webserver' .. 'webserver' will be the middle man between the database and I.
     // 'collection' is a kinda of a 'folder' inside my database.

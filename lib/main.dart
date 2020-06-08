@@ -1,3 +1,4 @@
+import 'package:ScaniT/screens/new_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './providers/pictures_provider.dart';
@@ -62,21 +63,48 @@ class MyApp extends StatelessWidget {
               scaffoldBackgroundColor: Colors.white,
               accentColor: Colors.deepOrange[300],
               textTheme: TextTheme(
-                  headline6: const TextStyle(
-                      fontFamily: 'Cairo',
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold),
-                  button: const TextStyle(color: Colors.white),
-                  subtitle2: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                  ),
-                  bodyText2: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                headline1: const TextStyle(
                     fontFamily: 'Cairo',
-                  )),
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold),
+                button: const TextStyle(color: Colors.white),
+                subtitle1: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16,
+                ),
+                bodyText2: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Cairo',
+                ),
+                // this is for the home page screen
+                headline2: const TextStyle(
+                  fontFamily: 'Nunito',
+                  fontSize: 25,
+                  color: Color(0xFF0D1333),
+                  fontWeight: FontWeight.bold,
+                ),
+                subtitle2: const TextStyle(
+                  fontFamily: 'Nunito',
+                  fontSize: 20,
+                  color: Color(0xFF61688B),
+                  height: 2,
+                ),
+                headline3: TextStyle(
+                  fontFamily: 'Nunito',
+                  fontSize: 20,
+                  color: Color(0xFF0D1333),
+                  fontWeight: FontWeight.bold,
+                ),
+                headline6: const TextStyle(
+                  fontFamily: 'Nunito',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0D1333),
+                ),
+                // ===========================
+              ),
               appBarTheme: const AppBarTheme(
                   textTheme: const TextTheme(
                       headline6: const TextStyle(
@@ -87,7 +115,7 @@ class MyApp extends StatelessWidget {
           // THIS is the 'homePage' of the entire application so to speak.
           // check to see if the user is logged in or not
           home: authProvider.isUserAuth
-              ? TopTabsScreen()
+              ? NewHomeScreen()
               // the user is NOT logged in .. so i'll check for a token and try to
               // automatically log him in.
               : FutureBuilder(
