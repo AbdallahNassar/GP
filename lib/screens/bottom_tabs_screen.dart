@@ -1,7 +1,7 @@
 import './update_image_screen.dart';
 
 import '../widgets/custom_app_drawer.dart';
-import './home_page_screen.dart';
+// import './home_page_screen.dart';
 import './favourites_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +23,7 @@ class _BottomTapsScreenState extends State<BottomTapsScreen> {
   // because I have to be inside of some specific state to have that functionality
   void initState() {
     _screensList = [
-      {'screen': HomePageScreen(), 'title': 'ScaniT'},
+      // {'screen': HomePageScreen(), 'title': 'ScaniT'},
       {'screen': FavouritesScreen(), 'title': 'Your Favoutire Items'}
     ];
     super.initState();

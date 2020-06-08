@@ -1,17 +1,18 @@
-import '../providers/pictures_provider.dart';
-import '../widgets/custom_app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
-
-import '../widgets/new_home_grid.dart';
+import '';
+import '../screens/update_image_screen.dart';
+import '../providers/pictures_provider.dart';
+import '../widgets/custom_app_drawer.dart';
+import '../widgets/home_grid.dart';
 import '../providers/authentication_provider.dart';
 
-class NewHomeScreen extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   // ========================== class parameters ==========================
-  static const routeName = '/new-home-page';
+  static const routeName = '/home-page';
   // ========================== class constructor ==========================
-  const NewHomeScreen({Key key}) : super(key: key);
+  const HomeScreen({Key key}) : super(key: key);
   // =========================== class methods ============================
   // 'async' to return a 'future' and 'awaits' to allow that that I can wait for this
   //  to finish executing before I move onto the next code .
@@ -44,6 +45,8 @@ class NewHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ========================== class parameters ==========================
+    final GlobalKey<ScaffoldState> _homeScaffoldKey =
+        new GlobalKey<ScaffoldState>();
     // go get device dimensions
     final deviceSize = MediaQuery.of(context).size;
     // to get user name and picture.
@@ -51,7 +54,9 @@ class NewHomeScreen extends StatelessWidget {
     // ======================================================================
 
     return Scaffold(
+      key: _homeScaffoldKey,
       backgroundColor: Colors.white,
+      drawer: CustomAppDrawer(),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () => _mReFetchData(context),
@@ -68,6 +73,7 @@ class NewHomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     InkWell(
+                      onTap: () => _homeScaffoldKey.currentState.openDrawer(),
                       child: SvgPicture.asset(
                         'assets/icons/menu.svg',
                       ),
@@ -115,7 +121,7 @@ class NewHomeScreen extends StatelessWidget {
                         Container(
                           alignment: Alignment.center,
                           child: Text(
-                            'Search for pictures',
+                            'Search in Pictures',
                             style: TextStyle(
                               fontSize: 18,
                               color: Color(0xFFA0A5BD),
@@ -129,15 +135,14 @@ class NewHomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      'Categories',
+                      'Pictures',
                       style: Theme.of(context).textTheme.headline3,
                     ),
                     Text(
                       'See All',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6
-                          .copyWith(color: Color(0xFF6E8AFA)),
+                      style: Theme.of(context).textTheme.headline6.copyWith(
+                            color: Color(0xFF6E8AFA),
+                          ),
                     ),
                   ],
                 ),
@@ -149,6 +154,16 @@ class NewHomeScreen extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        // Open the 'UpdatePicture Screen'.
+        onPressed: () =>
+            Navigator.of(context).pushNamed(UpdatePictureScreen.routeName),
+        child: Icon(
+          Icons.add,
+          size: 30,
+          color: Theme.of(context).textTheme.button.color,
         ),
       ),
     );

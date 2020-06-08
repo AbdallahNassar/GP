@@ -34,7 +34,7 @@ class EmptyList extends StatelessWidget {
             ),
           ),
           Container(
-            height: constraints.maxHeight * 0.1,
+            height: constraints.maxHeight * 0.15,
             child: const Text(
               'YOUR LIST IS\n CURRENTLY EMPTY!\n',
               style: const TextStyle(

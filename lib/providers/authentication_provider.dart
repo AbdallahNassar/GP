@@ -60,7 +60,7 @@ class Authentication with ChangeNotifier {
   void _authenticateUser({token, userId, userPic, userName}) {
     _authToken = token;
     _userID = userId;
-    _userName = userName ?? 'there';
+    _userName = userName ?? _userName;
     _userPicURI = userPic ?? 'assets/images/avatar.png';
     notifyListeners();
   }
@@ -68,17 +68,22 @@ class Authentication with ChangeNotifier {
   // 'async' to not freeze the app while i'm waiting for the dataBase response.
   // 'Future<void> because async
   Future<void> mAuthenticate(
-      {String email, String password, String identifier}) async {
+      {String email,
+      String password,
+      String identifier,
+      String userName}) async {
     try {
       // check the sign in mode
       switch (identifier) {
         case 'signUp':
           await _mNativeSingIn(
               identifier: identifier, email: email, password: password);
+          await _mAddUserName(userName: userName);
           break;
         case 'signInWithPassword':
           await _mNativeSingIn(
               identifier: identifier, email: email, password: password);
+          await _mFetchUserName();
           break;
         case 'singInWithGoogle':
           await _mGoogleSignIn(identifier: identifier);
@@ -99,7 +104,6 @@ class Authentication with ChangeNotifier {
         userName: _serverResponse['name'],
         userPic: _serverResponse['pictureURL'],
       );
-
       // now I save the token on the device such that when the user exits the app and come back he'll still be
       // logged in and can directly use the app .. this will be done with 'sharedPrefrences' package and the
       // function containing it should be async.
@@ -238,12 +242,15 @@ class Authentication with ChangeNotifier {
     }
   }
 
-  Future<void> mSignUp(String email, String password) async {
+  Future<void> mSignUp(String email, String password, String username) async {
     // I need to return the future that actually does the work so that the spinnder works correctly,
     // so I return the 'future' which I get as the return value of the method 'authenticate' ..
     // otherwise I automatically return the 'future' of the 'signUp' method.
     return mAuthenticate(
-        email: email, password: password, identifier: 'signUp');
+        email: email,
+        password: password,
+        identifier: 'signUp',
+        userName: username);
   }
 
   Future<void> mLogin(String email, String password) async {
@@ -254,6 +261,47 @@ class Authentication with ChangeNotifier {
   // to login with google/facebook/twitter
   Future<void> mAPILogin({identifier}) async {
     return mAuthenticate(identifier: identifier);
+  }
+
+  Future<void> _mAddUserName({String userName}) async {
+    final String collectionName = 'usernames';
+    final String dataBaseUrl =
+        'https://gp-scanit.firebaseio.com/$collectionName/${_serverResponse['localId']}.json?auth=${_serverResponse['idToken']}';
+    // setting up the changedData that I want to send .. I only send what I wish to replace old val with.
+    // 'json.encode' is provided by importing 'dart:convert'
+    final jsonUserName = json.encode(userName);
+
+    try {
+      final response = await http.put(dataBaseUrl, body: jsonUserName);
+
+      if (response.statusCode >= 400) {
+        print('Error in adding username to databse.');
+      }
+      // T'll leave this here to handle any 'network' error or smthing.
+    } catch (error) {
+      // there's an error .. roll back the changes.
+      print('Error in adding username to databse.');
+    }
+  }
+
+  Future<void> _mFetchUserName() async {
+    final String collectionName = 'usernames';
+    final dataBaseUrl =
+        'https://gp-scanit.firebaseio.com/$collectionName/${_serverResponse['localId']}.json?auth=${_serverResponse['idToken']}';
+    try {
+      // get the data in the dataBaseUrl
+      final response = await http.get(dataBaseUrl);
+      // convert them FROM json INTO Map<String,dynamic> OR Map<String,dynamic>
+      final respUserName = json.decode(response.body);
+      // to not throw an error when the list is empty
+      if (respUserName == null) {
+        _userName = 'there';
+        return;
+      }
+      _userName = respUserName;
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<bool> mTryAutoLogin() async {

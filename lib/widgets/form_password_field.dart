@@ -72,6 +72,7 @@ class _FormPasswordFieldState extends State<FormPasswordField> {
             : TextInputAction.done,
         controller:
             (widget.hint == 'Password') ? widget.passwordController : null,
+        // who will I be receiving from/as.
         focusNode: (widget.hint == 'Password')
             ? widget.passwordFocusNode
             : widget.confirmPasswordFocusNode,
@@ -91,6 +92,7 @@ class _FormPasswordFieldState extends State<FormPasswordField> {
         onSaved: (value) {
           widget.authData['password'] = value.trim();
         },
+        // who will I send to
         onFieldSubmitted: widget.hint != 'Password'
             ? null
             : (_) => FocusScope.of(context)

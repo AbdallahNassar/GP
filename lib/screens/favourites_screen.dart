@@ -11,7 +11,7 @@ class FavouritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomeGrid(
+    return HomeScreenGrid(
       routeName: routeName,
     );
   }

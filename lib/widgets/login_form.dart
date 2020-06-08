@@ -27,6 +27,7 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
   final _passwordController = TextEditingController();
   // MUST be disposed of after the form terminates
   final _passwordFocusNode = FocusNode();
+  final _userNameFocusNode = FocusNode();
   // MUST be disposed of after the form terminates
   final _confirmPasswordFocusNode = FocusNode();
   // ========================== class methods ==========================
@@ -34,6 +35,7 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
   @override
   void dispose() {
     _passwordController.dispose();
+    _userNameFocusNode.dispose();
     _passwordFocusNode.dispose();
     _confirmPasswordFocusNode.dispose();
     super.dispose();
@@ -112,6 +114,8 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
           FormTextField(
             authData: _authData,
             passwordFocusNode: _passwordFocusNode,
+            userNameFocusNode: _userNameFocusNode,
+            hintText: 'Your Email',
           ),
           FormPasswordField(
             authData: _authData,

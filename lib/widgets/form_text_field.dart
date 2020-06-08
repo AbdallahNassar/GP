@@ -4,16 +4,22 @@ class FormTextField extends StatelessWidget {
   // ========================== class parameters ==========================
   final Map<String, String> authData;
   final FocusNode passwordFocusNode;
+  final FocusNode userNameFocusNode;
+  final String hintText;
   // ========================== class constructor ==========================
   const FormTextField({
     @required this.authData,
     @required this.passwordFocusNode,
+    @required this.userNameFocusNode,
+    @required this.hintText,
   });
 
   // ======================================================================
 
   @override
   Widget build(BuildContext context) {
+    // to get the current screen name
+    final callerRoute = ModalRoute.of(context).settings.name.toString();
     // get the device dimensions
     final deviceSize = MediaQuery.of(context).size;
     return Container(
@@ -35,14 +41,15 @@ class FormTextField extends StatelessWidget {
               Icons.people,
               color: Theme.of(context).primaryColor,
             ),
-            hintText: 'Your Email',
+            hintText: hintText,
             hintStyle: TextStyle(fontWeight: FontWeight.bold),
             border: InputBorder.none),
         keyboardType: TextInputType.emailAddress,
         textInputAction: TextInputAction.next,
-
+        // who will I receive from
+        focusNode: hintText.contains('Email') ? null : userNameFocusNode,
         validator: (value) {
-          if (value.isEmpty || !value.contains('@')) {
+          if (value.isEmpty) {
             return 'Invalid email!';
           }
           // everything is good .. so return NULL .. that's how the validator works.
@@ -50,11 +57,23 @@ class FormTextField extends StatelessWidget {
         },
         // save the data in the template I created at the beginning of this widget;
         onSaved: (value) {
-          authData['email'] = value.trim();
+          hintText.contains('Email')
+              ? authData['email'] = value.trim()
+              : authData['userName'] = value.trim();
         },
         // this allows me to go to the specified 'foucsNode' when I submit this text field.
-        onFieldSubmitted: (_) =>
-            FocusScope.of(context).requestFocus(passwordFocusNode),
+        onFieldSubmitted: (_) {
+          // to make the focus nodes work appropriately
+          if (callerRoute != '/login') {
+            hintText.contains('Email')
+                ? FocusScope.of(context).requestFocus(userNameFocusNode)
+                : FocusScope.of(context).requestFocus(passwordFocusNode);
+          } else {
+            hintText.contains('Email')
+                ? FocusScope.of(context).requestFocus(passwordFocusNode)
+                : FocusScope.of(context).requestFocus(userNameFocusNode);
+          }
+        },
       ),
     );
   }

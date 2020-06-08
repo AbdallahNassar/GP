@@ -1,4 +1,4 @@
-import 'package:ScaniT/screens/new_home_screen.dart';
+import './screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './providers/pictures_provider.dart';
@@ -13,7 +13,6 @@ import './screens/picture_details_screen.dart';
 import './screens/favourites_screen.dart';
 import './screens/top_tabs_screen.dart';
 import './screens/options_screen.dart';
-import './screens/home_page_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/login_screen.dart';
 
@@ -58,64 +57,69 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Home Page',
           theme: ThemeData(
-              primaryColor: Color(0xFF6F35A5),
-              primaryColorLight: Color(0xFFF1E6FF),
-              scaffoldBackgroundColor: Colors.white,
-              accentColor: Colors.deepOrange[300],
-              textTheme: TextTheme(
-                headline1: const TextStyle(
-                    fontFamily: 'Cairo',
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold),
-                button: const TextStyle(color: Colors.white),
-                subtitle1: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                ),
-                bodyText2: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+            primaryColor: Color(0xFF6F35A5),
+            primaryColorLight: Color(0xFFF1E6FF),
+            scaffoldBackgroundColor: Colors.white,
+            accentColor: Colors.deepOrange[200],
+            // accentColor: Colors.deepOrange[300],
+            textTheme: TextTheme(
+              headline1: const TextStyle(
                   fontFamily: 'Cairo',
-                ),
-                // this is for the home page screen
-                headline2: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 25,
-                  color: Color(0xFF0D1333),
-                  fontWeight: FontWeight.bold,
-                ),
-                subtitle2: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 20,
-                  color: Color(0xFF61688B),
-                  height: 2,
-                ),
-                headline3: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 20,
-                  color: Color(0xFF0D1333),
-                  fontWeight: FontWeight.bold,
-                ),
-                headline6: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0D1333),
-                ),
-                // ===========================
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold),
+              button: const TextStyle(color: Colors.white),
+              subtitle1: const TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
               ),
-              appBarTheme: const AppBarTheme(
-                  textTheme: const TextTheme(
-                      headline6: const TextStyle(
-                          fontFamily: 'Rochester',
-                          fontSize: 21,
-                          fontWeight: FontWeight.bold)))),
+              bodyText2: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Cairo',
+              ),
+              // this is for the home page screen
+              headline2: const TextStyle(
+                fontFamily: 'Nunito',
+                fontSize: 25,
+                color: Color(0xFF0D1333),
+                fontWeight: FontWeight.bold,
+              ),
+              subtitle2: const TextStyle(
+                fontFamily: 'Nunito',
+                fontSize: 20,
+                color: Color(0xFF61688B),
+                height: 2,
+              ),
+              headline3: TextStyle(
+                fontFamily: 'Nunito',
+                fontSize: 20,
+                color: Color(0xFF0D1333),
+                fontWeight: FontWeight.bold,
+              ),
+              headline6: const TextStyle(
+                fontFamily: 'Nunito',
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF0D1333),
+              ),
+              // ===========================
+            ),
+            appBarTheme: const AppBarTheme(
+              textTheme: const TextTheme(
+                headline6: const TextStyle(
+                    fontFamily: 'Rochester',
+                    fontSize: 21,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
 
           // THIS is the 'homePage' of the entire application so to speak.
           // check to see if the user is logged in or not
           home: authProvider.isUserAuth
-              ? NewHomeScreen()
+              // ? TopTabsScreen()
+              ? HomeScreen()
               // the user is NOT logged in .. so i'll check for a token and try to
               // automatically log him in.
               : FutureBuilder(
@@ -139,7 +143,7 @@ class MyApp extends StatelessWidget {
           routes: {
             // could aslo have used 'bottomtabsScreen' if I'd wanted to.
             TopTabsScreen.routeName: (context) => TopTabsScreen(),
-            HomePageScreen.routeName: (context) => HomePageScreen(),
+            HomeScreen.routeName: (context) => HomeScreen(),
             OptionsScreen.routeName: (context) => OptionsScreen(),
             FavouritesScreen.routeName: (context) => FavouritesScreen(),
             PictureDetails.routeName: (context) => PictureDetails(),

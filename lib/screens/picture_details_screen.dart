@@ -42,14 +42,19 @@ class PictureDetails extends StatelessWidget {
               flexibleSpace: FlexibleSpaceBar(
                 titlePadding: EdgeInsets.symmetric(
                   horizontal: 25,
-                  vertical: 15,
+                  vertical: 10,
                 ),
                 title: Container(
+                  constraints: BoxConstraints(maxHeight: 60),
+                  alignment: Alignment.bottomLeft,
                   decoration: BoxDecoration(
+                    // border: Border.all(
+                    //   color: Colors.black,
+                    // ),
                     borderRadius: BorderRadius.circular(
                       16,
                     ),
-                    color: Theme.of(context).accentColor.withAlpha(150),
+                    color: Theme.of(context).primaryColorLight.withOpacity(0.2),
                   ),
                   padding: const EdgeInsets.only(
                     right: 9.0,
@@ -58,9 +63,11 @@ class PictureDetails extends StatelessWidget {
                   ),
                   child: Text(
                     pictureData.title,
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headline6.copyWith(
                           fontFamily: 'Lobster',
                           fontWeight: FontWeight.w400,
+                          fontSize: 23,
                         ),
                   ),
                 ),
@@ -85,8 +92,10 @@ class PictureDetails extends StatelessWidget {
                   //   height: 30,
                   // ),
                   Container(
-                    padding: const EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
+                      color:
+                          Theme.of(context).primaryColorLight.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(50),
                       border: Border.all(
                         color: Colors.black54,
