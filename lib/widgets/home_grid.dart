@@ -33,7 +33,9 @@ class HomeScreenGrid extends StatelessWidget {
           return Container(
             height: deviceSize.height * 0.5,
             child: Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor,
+              ),
             ),
           );
           // Data is Fetched ..

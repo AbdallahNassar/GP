@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ========================== class parameters ==========================
-    // final GlobalKey<ScaffoldState> _homeScaffoldKey =
+    // final GlobalKey<ScaffoldState> homeScaffoldKey =
     //     new GlobalKey<ScaffoldState>();
     // go get device dimensions
     final deviceSize = MediaQuery.of(context).size;
@@ -56,7 +56,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       // key to be used in custom delete icon.
-      key: myGlobals.scaffoldKey,
+      key: myGlobals.homeScaffoldKey,
       backgroundColor: Colors.white,
       drawer: CustomAppDrawer(),
       body: SafeArea(
@@ -75,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     InkWell(
-                      // onTap: () => myGlobals.scaffoldKey.currentState.,
+                      // onTap: () => homeScaffoldKey.currentState.openDrawer(),
                       child: SvgPicture.asset(
                         'assets/icons/menu.svg',
                       ),

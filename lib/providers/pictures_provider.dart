@@ -249,6 +249,10 @@ class Pictures with ChangeNotifier {
   // we define this function because we want to move as much of the providing logic
   // from our 'widgets' into the 'provider' itself, for some consmic reason.
   Picture mFindByID(id) {
-    return userPictures.firstWhere((item) => item.id == id);
+    try {
+      return userPictures.firstWhere((item) => item.id == id) ?? null;
+    } catch (e) {
+      return null;
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:ScaniT/helpers/globals.dart';
+import 'package:ScaniT/screens/home_screen.dart';
 
 import '../providers/picture_provider.dart';
 import '../providers/pictures_provider.dart';
@@ -38,7 +39,7 @@ class CustomDeleteIcon extends StatelessWidget {
             // show the confirmation Dialogue.
             //'await' to wait for the user response befor I move on.
             final answer = await showDialog(
-                context: myGlobals.scaffoldKey.currentContext,
+                context: myGlobals.homeScaffoldKey.currentContext,
                 // the shown dialog will be an 'alert Dialog'
                 builder: (_) => AlertDialog(
                       titleTextStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -128,7 +129,7 @@ class CustomDeleteIcon extends StatelessWidget {
                           onPressed: () async {
                             print('start trying to resotre @ custom_dele_icon');
                             await Provider.of<Pictures>(
-                                    myGlobals.scaffoldKey.currentContext,
+                                    myGlobals.homeScaffoldKey.currentContext,
                                     listen: false)
                                 .mAddPicture(
                                     picture: picture, identifier: 'Restore');
