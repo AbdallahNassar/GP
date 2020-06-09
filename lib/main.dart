@@ -57,6 +57,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Home Page',
           theme: ThemeData(
+            errorColor: Colors.red,
             primaryColor: Color(0xFF6F35A5),
             primaryColorLight: Color(0xFFF1E6FF),
             scaffoldBackgroundColor: Colors.white,
@@ -77,6 +78,13 @@ class MyApp extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Cairo',
+              ),
+              caption: const TextStyle(
+                fontFamily: 'Cairo',
+                fontSize: 17,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                // shadows: [Shadow(blurRadius: 2),],
               ),
               // this is for the home page screen
               headline2: const TextStyle(
@@ -142,7 +150,7 @@ class MyApp extends StatelessWidget {
           // each route has an identifier that's connected to a certain 'widget' or 'screen' or 'page'
           routes: {
             // could aslo have used 'bottomtabsScreen' if I'd wanted to.
-            TopTabsScreen.routeName: (context) => TopTabsScreen(),
+            // TopTabsScreen.routeName: (context) => TopTabsScreen(),
             HomeScreen.routeName: (context) => HomeScreen(),
             OptionsScreen.routeName: (context) => OptionsScreen(),
             FavouritesScreen.routeName: (context) => FavouritesScreen(),

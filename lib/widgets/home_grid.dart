@@ -1,4 +1,4 @@
-import 'package:ScaniT/widgets/new_pic_item.dart';
+import '../widgets/picture_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../providers/pictures_provider.dart';
@@ -51,65 +51,58 @@ class HomeScreenGrid extends StatelessWidget {
                   // I should check the 'pictureList' which has all the pictures
                   if (picturesProvider.pictureList.isEmpty) {
                     print('empty');
-                    return Expanded(
-                      child: EmptyList(
-                        title: 'Start Adding Pictures Now!',
-                      ),
+                    return EmptyList(
+                      title: 'Start Adding Pictures Now!',
                     );
                   }
                 }
                 // I'm rendering the items in the 'favourite screen'
                 else {
                   if (picturesProvider.favouritepicturesList.isEmpty) {
-                    return Expanded(
-                      child: EmptyList(
-                        title: 'Start Favouriting Pictures Now!',
-                      ),
+                    return EmptyList(
+                      title: 'Start Favouriting Pictures Now!',
                     );
                   }
                 }
                 // the lists are NOT empty so I should start getting the data and build it.
-                return Expanded(
-                  child: StaggeredGridView.countBuilder(
-                    itemCount: (routeName == '/')
-                        ? picturesProvider.pictureList.length
-                        : picturesProvider.favouritepicturesList.length,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: deviceSize.width * 0.04,
-                    mainAxisSpacing: deviceSize.height * 0.017,
-                    staggeredTileBuilder: (i) => StaggeredTile.fit(1),
-                    itemBuilder: (ctx, itemIndex) =>
-                        ChangeNotifierProvider.value(
-                      // here I return a 'picture' instead of creating one like 'picture()' because it was already created
-                      // when I created my 'picture(((S)))' provider earlier in the main where I needed it and that was the
-                      // top most place where I needed it.
-                      value: (routeName == '/')
-                          ? picturesProvider.pictureList[itemIndex]
-                          : picturesProvider.favouritepicturesList[itemIndex],
-                      // it would be okay here to pass the data to another 'widget' in the constructor as I need it and want to
-                      // display it there .. so this is the preferred practise .. but providers are used to prevent having to
-                      // pass arguments to a 'widget' that will NOT use these arguments but simply forward them to it's child or smth.
-                      // child: pictureItem(picture: picturesList[itemIndex])));
+                return StaggeredGridView.countBuilder(
+                  itemCount: (routeName == '/')
+                      ? picturesProvider.pictureList.length
+                      : picturesProvider.favouritepicturesList.length,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: deviceSize.width * 0.04,
+                  mainAxisSpacing: deviceSize.height * 0.017,
+                  staggeredTileBuilder: (i) => StaggeredTile.fit(1),
+                  itemBuilder: (ctx, itemIndex) => ChangeNotifierProvider.value(
+                    // here I return a 'picture' instead of creating one like 'picture()' because it was already created
+                    // when I created my 'picture(((S)))' provider earlier in the main where I needed it and that was the
+                    // top most place where I needed it.
+                    value: (routeName == '/')
+                        ? picturesProvider.pictureList[itemIndex]
+                        : picturesProvider.favouritepicturesList[itemIndex],
+                    // it would be okay here to pass the data to another 'widget' in the constructor as I need it and want to
+                    // display it there .. so this is the preferred practise .. but providers are used to prevent having to
+                    // pass arguments to a 'widget' that will NOT use these arguments but simply forward them to it's child or smth.
+                    // child: pictureItem(picture: picturesList[itemIndex])));
 
-                      // BUT I then changed my logic and now I want to know dynamically the values of a given picture .. so I created
-                      // a provider and will use that to get my data from.
+                    // BUT I then changed my logic and now I want to know dynamically the values of a given picture .. so I created
+                    // a provider and will use that to get my data from.
 
-                      child: NPictureItem(index: itemIndex),
+                    child: PictureItem(index: itemIndex),
 
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(
-                      //       horizontal: 10.0, vertical: 10.0),
-                      //   child: Text(
-                      //     'Image Title',
-                      //     style: Theme.of(context)
-                      //         .textTheme
-                      //         .headline3
-                      //         .copyWith(
-                      //             fontFamily: 'Lobster',
-                      //             fontWeight: FontWeight.w300),
-                      //   ),
-                      // ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //       horizontal: 10.0, vertical: 10.0),
+                    //   child: Text(
+                    //     'Image Title',
+                    //     style: Theme.of(context)
+                    //         .textTheme
+                    //         .headline3
+                    //         .copyWith(
+                    //             fontFamily: 'Lobster',
+                    //             fontWeight: FontWeight.w300),
+                    //   ),
+                    // ),
                   ),
                 );
               },

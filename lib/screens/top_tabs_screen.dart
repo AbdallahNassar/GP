@@ -31,7 +31,7 @@ class TopTabsScreen extends StatelessWidget {
         //  a GlobalKey to associate it with this Scaffold widget,
         // and use the context from this widget's key when creating the dialog
         // to corrctoly handle pictrue deletion and restoration.
-        key: myGlobals.scaffoldKey,
+
         drawer: CustomAppDrawer(),
         appBar: AppBar(
           title: Text('ScaniT'),

@@ -81,7 +81,7 @@ class Authentication with ChangeNotifier {
           await _mAddUserName(userName: userName);
           break;
         case 'signInWithPassword':
-          await _mNativeSingIn(
+          return _mNativeSingIn(
               identifier: identifier, email: email, password: password);
           await _mFetchUserName();
           break;
@@ -96,7 +96,7 @@ class Authentication with ChangeNotifier {
               code: 'AUTHENTICATION_ERROR',
               message: 'Wrong Authentication Identifier.');
       }
-
+      await _mFetchUserName();
       // no error .. so every thing is okay .. setUp the token and authenticate the user.
       _authenticateUser(
         token: _serverResponse['idToken'],
@@ -128,26 +128,55 @@ class Authentication with ChangeNotifier {
 
   Future<void> _mNativeSingIn(
       {String email, String password, String identifier}) async {
-    // the default 'URL' is  https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
-    // but you replace the '[API_KEY]' with your own key .. which you can get from the firebase 'setting'
-    // next to the project name then 'project setting'.
-    final authenticationKey = 'AIzaSyBM8prCTzoyPGoy9DhPaWEO0lhTSxEzAi0';
-    final authenticationURL =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$identifier?key=$authenticationKey';
+    try {
+      // the default 'URL' is  https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
+      // but you replace the '[API_KEY]' with your own key .. which you can get from the firebase 'setting'
+      // next to the project name then 'project setting'.
+      final authenticationKey = 'AIzaSyBM8prCTzoyPGoy9DhPaWEO0lhTSxEzAi0';
+      final authenticationURL =
+          'https://identitytoolkit.googleapis.com/v1/accounts:$identifier?key=$authenticationKey';
 
-    // create the request body
-    final jsonRequest = json.encode(
-        {'email': email, 'password': password, 'returnSecureToken': true});
-    // send the request and receive the response in 'JSON' format
-    final jsonResponse = await http.post(authenticationURL, body: jsonRequest);
+      // create the request body
+      final jsonRequest = json.encode(
+          {'email': email, 'password': password, 'returnSecureToken': true});
+      // send the request and receive the response in 'JSON' format
+      final jsonResponse =
+          await http.post(authenticationURL, body: jsonRequest);
 
-    // extract the data from the 'Json' object into a Map
-    _serverResponse = json.decode(jsonResponse.body);
-    // check whether or not there's an error in the response.
-    if (_serverResponse['error'] != null) {
-      // I'm throwing my exception with this specific message because I have an idea of the structure of the
-      // json response because first I tried to read it and understand it before I decided what to use from it.
-      throw CustomHTTPException(message: _serverResponse['error']['message']);
+      // extract the data from the 'Json' object into a Map
+      _serverResponse = json.decode(jsonResponse.body);
+      // check whether or not there's an error in the response.
+      if (_serverResponse['error'] != null) {
+        // I'm throwing my exception with this specific message because I have an idea of the structure of the
+        // json response because first I tried to read it and understand it before I decided what to use from it.
+        throw CustomHTTPException(message: _serverResponse['error']['message']);
+      }
+      await _mFetchUserName();
+      // no error .. so every thing is okay .. setUp the token and authenticate the user.
+      _authenticateUser(
+        token: _serverResponse['idToken'],
+        userId: _serverResponse['localId'],
+        userName: _serverResponse['name'],
+        userPic: _serverResponse['pictureURL'],
+      );
+      // now I save the token on the device such that when the user exits the app and come back he'll still be
+      // logged in and can directly use the app .. this will be done with 'sharedPrefrences' package and the
+      // function containing it should be async.
+      // the following line will give me access to the 'sharedPrefernceces' Object so to say
+      final sharedPrefs = await SharedPreferences.getInstance();
+      // this will be used to write data TO and FROM the device storage.
+      final jsonUserData = json.encode({
+        '_authToken': _authToken,
+        '_userID': _userID,
+        '_userPicURI': _userPicURI,
+        '_userName': _userName,
+        // stored as 'Iso8601String' to parse it later as 'dateTime'
+      });
+
+      sharedPrefs.setString('jsonUserData', jsonUserData);
+    } catch (e) {
+      //TODO : handle this and throw erroe
+      print(e);
     }
   }
 
@@ -246,7 +275,7 @@ class Authentication with ChangeNotifier {
     // I need to return the future that actually does the work so that the spinnder works correctly,
     // so I return the 'future' which I get as the return value of the method 'authenticate' ..
     // otherwise I automatically return the 'future' of the 'signUp' method.
-    return mAuthenticate(
+    await mAuthenticate(
         email: email,
         password: password,
         identifier: 'signUp',
@@ -254,13 +283,13 @@ class Authentication with ChangeNotifier {
   }
 
   Future<void> mLogin(String email, String password) async {
-    return mAuthenticate(
+    await mAuthenticate(
         email: email, password: password, identifier: 'signInWithPassword');
   }
 
   // to login with google/facebook/twitter
   Future<void> mAPILogin({identifier}) async {
-    return mAuthenticate(identifier: identifier);
+    await mAuthenticate(identifier: identifier);
   }
 
   Future<void> _mAddUserName({String userName}) async {

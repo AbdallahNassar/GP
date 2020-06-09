@@ -1,7 +1,7 @@
+import 'package:ScaniT/helpers/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
-import '';
 import '../screens/update_image_screen.dart';
 import '../providers/pictures_provider.dart';
 import '../widgets/custom_app_drawer.dart';
@@ -18,6 +18,7 @@ class HomeScreen extends StatelessWidget {
   //  to finish executing before I move onto the next code .
   Future<void> _mReFetchData(context) async {
     try {
+      print('fetching form home');
       await Provider.of<Pictures>(context, listen: false).mFetchData();
     } catch (error) {
       await showDialog(
@@ -45,8 +46,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ========================== class parameters ==========================
-    final GlobalKey<ScaffoldState> _homeScaffoldKey =
-        new GlobalKey<ScaffoldState>();
+    // final GlobalKey<ScaffoldState> _homeScaffoldKey =
+    //     new GlobalKey<ScaffoldState>();
     // go get device dimensions
     final deviceSize = MediaQuery.of(context).size;
     // to get user name and picture.
@@ -54,7 +55,8 @@ class HomeScreen extends StatelessWidget {
     // ======================================================================
 
     return Scaffold(
-      key: _homeScaffoldKey,
+      // key to be used in custom delete icon.
+      key: myGlobals.scaffoldKey,
       backgroundColor: Colors.white,
       drawer: CustomAppDrawer(),
       body: SafeArea(
@@ -73,7 +75,7 @@ class HomeScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     InkWell(
-                      onTap: () => _homeScaffoldKey.currentState.openDrawer(),
+                      // onTap: () => myGlobals.scaffoldKey.currentState.,
                       child: SvgPicture.asset(
                         'assets/icons/menu.svg',
                       ),
@@ -150,20 +152,25 @@ class HomeScreen extends StatelessWidget {
                   height: deviceSize.height * 0.04,
                 ),
                 // routename to customize empty list message.
-                HomeScreenGrid(routeName: '/')
+                // flexible to medigate column error .. to restrain it.
+                Flexible(flex: 1, child: HomeScreenGrid(routeName: '/'))
               ],
             ),
           ),
         ),
       ),
+      // // bottomNavigationBar: BottomNavigationBar(
+      // //   items: ,
+      // ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).accentColor,
         // Open the 'UpdatePicture Screen'.
         onPressed: () =>
             Navigator.of(context).pushNamed(UpdatePictureScreen.routeName),
         child: Icon(
           Icons.add,
           size: 30,
-          color: Theme.of(context).textTheme.button.color,
+          color: Colors.white,
         ),
       ),
     );
