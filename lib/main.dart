@@ -1,3 +1,5 @@
+import 'package:ScaniT/screens/bottom_tabs_screen.dart';
+
 import './screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -127,7 +129,7 @@ class MyApp extends StatelessWidget {
           // check to see if the user is logged in or not
           home: authProvider.isUserAuth
               // ? TopTabsScreen()
-              ? HomeScreen()
+              ? BottomTapsScreen()
               // the user is NOT logged in .. so i'll check for a token and try to
               // automatically log him in.
               : FutureBuilder(
