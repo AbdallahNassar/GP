@@ -60,7 +60,7 @@ class Authentication with ChangeNotifier {
   void _authenticateUser({token, userId, userPic, userName}) {
     _authToken = token;
     _userID = userId;
-    _userName = userName ?? 'there';
+    _userName = userName ?? _userName;
     _userPicURI = userPic ?? 'assets/images/avatar.png';
     notifyListeners();
   }
@@ -68,17 +68,22 @@ class Authentication with ChangeNotifier {
   // 'async' to not freeze the app while i'm waiting for the dataBase response.
   // 'Future<void> because async
   Future<void> mAuthenticate(
-      {String email, String password, String identifier}) async {
+      {String email,
+      String password,
+      String identifier,
+      String userName}) async {
     try {
       // check the sign in mode
       switch (identifier) {
         case 'signUp':
           await _mNativeSingIn(
               identifier: identifier, email: email, password: password);
+          await _mAddUserName(userName: userName);
           break;
         case 'signInWithPassword':
-          await _mNativeSingIn(
+          return _mNativeSingIn(
               identifier: identifier, email: email, password: password);
+          await _mFetchUserName();
           break;
         case 'singInWithGoogle':
           await _mGoogleSignIn(identifier: identifier);
@@ -91,7 +96,7 @@ class Authentication with ChangeNotifier {
               code: 'AUTHENTICATION_ERROR',
               message: 'Wrong Authentication Identifier.');
       }
-
+      await _mFetchUserName();
       // no error .. so every thing is okay .. setUp the token and authenticate the user.
       _authenticateUser(
         token: _serverResponse['idToken'],
@@ -99,7 +104,6 @@ class Authentication with ChangeNotifier {
         userName: _serverResponse['name'],
         userPic: _serverResponse['pictureURL'],
       );
-
       // now I save the token on the device such that when the user exits the app and come back he'll still be
       // logged in and can directly use the app .. this will be done with 'sharedPrefrences' package and the
       // function containing it should be async.
@@ -124,26 +128,55 @@ class Authentication with ChangeNotifier {
 
   Future<void> _mNativeSingIn(
       {String email, String password, String identifier}) async {
-    // the default 'URL' is  https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
-    // but you replace the '[API_KEY]' with your own key .. which you can get from the firebase 'setting'
-    // next to the project name then 'project setting'.
-    final authenticationKey = 'AIzaSyBM8prCTzoyPGoy9DhPaWEO0lhTSxEzAi0';
-    final authenticationURL =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$identifier?key=$authenticationKey';
+    try {
+      // the default 'URL' is  https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
+      // but you replace the '[API_KEY]' with your own key .. which you can get from the firebase 'setting'
+      // next to the project name then 'project setting'.
+      final authenticationKey = 'AIzaSyBM8prCTzoyPGoy9DhPaWEO0lhTSxEzAi0';
+      final authenticationURL =
+          'https://identitytoolkit.googleapis.com/v1/accounts:$identifier?key=$authenticationKey';
 
-    // create the request body
-    final jsonRequest = json.encode(
-        {'email': email, 'password': password, 'returnSecureToken': true});
-    // send the request and receive the response in 'JSON' format
-    final jsonResponse = await http.post(authenticationURL, body: jsonRequest);
+      // create the request body
+      final jsonRequest = json.encode(
+          {'email': email, 'password': password, 'returnSecureToken': true});
+      // send the request and receive the response in 'JSON' format
+      final jsonResponse =
+          await http.post(authenticationURL, body: jsonRequest);
 
-    // extract the data from the 'Json' object into a Map
-    _serverResponse = json.decode(jsonResponse.body);
-    // check whether or not there's an error in the response.
-    if (_serverResponse['error'] != null) {
-      // I'm throwing my exception with this specific message because I have an idea of the structure of the
-      // json response because first I tried to read it and understand it before I decided what to use from it.
-      throw CustomHTTPException(message: _serverResponse['error']['message']);
+      // extract the data from the 'Json' object into a Map
+      _serverResponse = json.decode(jsonResponse.body);
+      // check whether or not there's an error in the response.
+      if (_serverResponse['error'] != null) {
+        // I'm throwing my exception with this specific message because I have an idea of the structure of the
+        // json response because first I tried to read it and understand it before I decided what to use from it.
+        throw CustomHTTPException(message: _serverResponse['error']['message']);
+      }
+      await _mFetchUserName();
+      // no error .. so every thing is okay .. setUp the token and authenticate the user.
+      _authenticateUser(
+        token: _serverResponse['idToken'],
+        userId: _serverResponse['localId'],
+        userName: _serverResponse['name'],
+        userPic: _serverResponse['pictureURL'],
+      );
+      // now I save the token on the device such that when the user exits the app and come back he'll still be
+      // logged in and can directly use the app .. this will be done with 'sharedPrefrences' package and the
+      // function containing it should be async.
+      // the following line will give me access to the 'sharedPrefernceces' Object so to say
+      final sharedPrefs = await SharedPreferences.getInstance();
+      // this will be used to write data TO and FROM the device storage.
+      final jsonUserData = json.encode({
+        '_authToken': _authToken,
+        '_userID': _userID,
+        '_userPicURI': _userPicURI,
+        '_userName': _userName,
+        // stored as 'Iso8601String' to parse it later as 'dateTime'
+      });
+
+      sharedPrefs.setString('jsonUserData', jsonUserData);
+    } catch (e) {
+      //TODO : handle this and throw erroe
+      print(e);
     }
   }
 
@@ -238,22 +271,66 @@ class Authentication with ChangeNotifier {
     }
   }
 
-  Future<void> mSignUp(String email, String password) async {
+  Future<void> mSignUp(String email, String password, String username) async {
     // I need to return the future that actually does the work so that the spinnder works correctly,
     // so I return the 'future' which I get as the return value of the method 'authenticate' ..
     // otherwise I automatically return the 'future' of the 'signUp' method.
-    return mAuthenticate(
-        email: email, password: password, identifier: 'signUp');
+    await mAuthenticate(
+        email: email,
+        password: password,
+        identifier: 'signUp',
+        userName: username);
   }
 
   Future<void> mLogin(String email, String password) async {
-    return mAuthenticate(
+    await mAuthenticate(
         email: email, password: password, identifier: 'signInWithPassword');
   }
 
   // to login with google/facebook/twitter
   Future<void> mAPILogin({identifier}) async {
-    return mAuthenticate(identifier: identifier);
+    await mAuthenticate(identifier: identifier);
+  }
+
+  Future<void> _mAddUserName({String userName}) async {
+    final String collectionName = 'usernames';
+    final String dataBaseUrl =
+        'https://gp-scanit.firebaseio.com/$collectionName/${_serverResponse['localId']}.json?auth=${_serverResponse['idToken']}';
+    // setting up the changedData that I want to send .. I only send what I wish to replace old val with.
+    // 'json.encode' is provided by importing 'dart:convert'
+    final jsonUserName = json.encode(userName);
+
+    try {
+      final response = await http.put(dataBaseUrl, body: jsonUserName);
+
+      if (response.statusCode >= 400) {
+        print('Error in adding username to databse.');
+      }
+      // T'll leave this here to handle any 'network' error or smthing.
+    } catch (error) {
+      // there's an error .. roll back the changes.
+      print('Error in adding username to databse.');
+    }
+  }
+
+  Future<void> _mFetchUserName() async {
+    final String collectionName = 'usernames';
+    final dataBaseUrl =
+        'https://gp-scanit.firebaseio.com/$collectionName/${_serverResponse['localId']}.json?auth=${_serverResponse['idToken']}';
+    try {
+      // get the data in the dataBaseUrl
+      final response = await http.get(dataBaseUrl);
+      // convert them FROM json INTO Map<String,dynamic> OR Map<String,dynamic>
+      final respUserName = json.decode(response.body);
+      // to not throw an error when the list is empty
+      if (respUserName == null) {
+        _userName = 'there';
+        return;
+      }
+      _userName = respUserName;
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<bool> mTryAutoLogin() async {

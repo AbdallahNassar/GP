@@ -1,12 +1,11 @@
 import 'package:ScaniT/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../models/drawer_item_model.dart';
 import '../screens/top_tabs_screen.dart';
 import '../screens/about_screen.dart';
-import '../screens/authentication_screen.dart';
+import '../screens/welcome_screen.dart';
 import '../screens/options_screen.dart';
 import './drawer_item.dart';
 
@@ -29,7 +28,7 @@ class CustomAppDrawer extends StatelessWidget {
     AppDrawerItemModel(
         title: 'Log Out',
         icon: Icon(Icons.exit_to_app),
-        calledRouteName: AuthenticationScreen.routeName),
+        calledRouteName: WelcomeScreen.routeName),
   ];
   // ======================================================================
 
@@ -37,7 +36,8 @@ class CustomAppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<Authentication>(context, listen: false);
     final userName = authProvider.userName[0].toUpperCase() +
-        authProvider.userName.substring(1);
+            authProvider.userName.substring(1) ??
+        'there';
 
     // print(userName[0].toUpperCase() + userName.substring(1));
     // to register what's the current screeen I was viewing before I pressed on the app drawer
@@ -49,12 +49,21 @@ class CustomAppDrawer extends StatelessWidget {
         child: Column(children: <Widget>[
       // 'appbar' at the top of the 'drawer'
       AppBar(
-        title: Text('Hello $userName!'),
+        backgroundColor: Color(0xFFF5F5F7),
+        title: Text(
+          'Hello $userName!',
+          style: Theme.of(context)
+              .textTheme
+              .headline1
+              .copyWith(fontFamily: 'Lobster'),
+        ),
         // to view the 'image' of the user.
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundImage: AssetImage('assets/images/avatar.png'),
+            backgroundImage: authProvider.userName == 'there'
+                ? AssetImage(authProvider.userPicURI)
+                : NetworkImage(authProvider.userPicURI),
           ),
         ),
         // to remove the 'drawer' from the 'drawer' :'''''D

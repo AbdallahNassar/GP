@@ -39,6 +39,7 @@ class DrawerItem extends StatelessWidget {
             onTap: () {
               // handle 'log Out' action has special treatment
               if (drawerItem.title == 'Log Out') {
+                print('logging out.');
                 _handleLogout(context, drawerItem.title);
                 // hanlde a normal action
               } else {

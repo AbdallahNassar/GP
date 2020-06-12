@@ -21,17 +21,20 @@ class _SignUpFormState extends State<SignUpForm> {
   Map<String, String> _authData = {
     'email': '',
     'password': '',
+    'userName': '',
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
   // MUST be disposed of after the form terminates
   final _passwordFocusNode = FocusNode();
+  final _userNameFocusNode = FocusNode();
   // MUST be disposed of after the form terminates
   final _confirmPasswordFocusNode = FocusNode();
   // ========================== class methods ==========================
   // dispose of the 'focusNode' at the end.
   @override
   void dispose() {
+    _userNameFocusNode.dispose();
     _passwordController.dispose();
     _passwordFocusNode.dispose();
     _confirmPasswordFocusNode.dispose();
@@ -67,8 +70,8 @@ class _SignUpFormState extends State<SignUpForm> {
     });
 
     try {
-      await Provider.of<Authentication>(context, listen: false)
-          .mSignUp(_authData['email'], _authData['password']);
+      await Provider.of<Authentication>(context, listen: false).mSignUp(
+          _authData['email'], _authData['password'], _authData['userName']);
 
       // to check if I get a specific kind of error/exception rather than check for any error/exception.
       // I could also have a normal generic 'catch' after the 'on ... catch'.
@@ -106,7 +109,17 @@ class _SignUpFormState extends State<SignUpForm> {
       child: Column(
         children: <Widget>[
           FormTextField(
-              authData: _authData, passwordFocusNode: _passwordFocusNode),
+            authData: _authData,
+            passwordFocusNode: _passwordFocusNode,
+            userNameFocusNode: _userNameFocusNode,
+            hintText: 'Your Email',
+          ),
+          FormTextField(
+            authData: _authData,
+            passwordFocusNode: _passwordFocusNode,
+            userNameFocusNode: _userNameFocusNode,
+            hintText: 'Your Username',
+          ),
           FormPasswordField(
             authData: _authData,
             hint: 'Password',

@@ -6,10 +6,9 @@ import 'package:flutter/material.dart';
 MyGlobals myGlobals = new MyGlobals();
 
 class MyGlobals {
-  GlobalKey _scaffoldKey;
-
+  GlobalKey<ScaffoldState> _homeScaffoldKey;
   MyGlobals() {
-    _scaffoldKey = GlobalKey();
+    _homeScaffoldKey = GlobalKey();
   }
-  GlobalKey get scaffoldKey => _scaffoldKey;
+  GlobalKey get homeScaffoldKey => _homeScaffoldKey;
 }

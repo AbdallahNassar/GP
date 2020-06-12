@@ -65,10 +65,14 @@ class Pictures with ChangeNotifier {
       // convert them FROM json INTO Map<String,dynamic> OR Map<String,dynamic>
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       // to not throw an error when the list is empty
-      if (extractedData == null) {
+      if (extractedData == null || extractedData['error'] != null) {
+        // this is to handle expired tokens
+        if (extractedData['error'] != null)
+          print(extractedData['error'] != null);
         userPictures = [];
         return;
       }
+
       // now after I've fetched my pictures I wanna fetch my 'favourite' status for all the pictures
       final String favouritesCollectionName = 'favourites';
       final String favouritesDataBaseUrl =
@@ -245,6 +249,10 @@ class Pictures with ChangeNotifier {
   // we define this function because we want to move as much of the providing logic
   // from our 'widgets' into the 'provider' itself, for some consmic reason.
   Picture mFindByID(id) {
-    return userPictures.firstWhere((item) => item.id == id);
+    try {
+      return userPictures.firstWhere((item) => item.id == id) ?? null;
+    } catch (e) {
+      return null;
+    }
   }
 }

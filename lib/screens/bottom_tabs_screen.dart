@@ -1,7 +1,7 @@
 import './update_image_screen.dart';
 
 import '../widgets/custom_app_drawer.dart';
-import './home_page_screen.dart';
+import './home_screen.dart';
 import './favourites_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +23,7 @@ class _BottomTapsScreenState extends State<BottomTapsScreen> {
   // because I have to be inside of some specific state to have that functionality
   void initState() {
     _screensList = [
-      {'screen': HomePageScreen(), 'title': 'ScaniT'},
+      {'screen': HomeScreen(), 'title': 'ScaniT'},
       {'screen': FavouritesScreen(), 'title': 'Your Favoutire Items'}
     ];
     super.initState();
@@ -39,20 +39,6 @@ class _BottomTapsScreenState extends State<BottomTapsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          IconButton(
-            onPressed: () =>
-                Navigator.of(context).pushNamed(UpdatePictureScreen.routeName),
-            icon: Icon(
-              Icons.add,
-              size: 25,
-              color: Theme.of(context).textTheme.button.color,
-            ),
-          )
-        ],
-        title: Text(_screensList[_selectedScreenIndex]['title']),
-      ),
       // 'Drawer' is to create that 'hamburger icon' at the 'appbar'
       drawer: CustomAppDrawer(),
       body: _screensList[_selectedScreenIndex]['screen'],

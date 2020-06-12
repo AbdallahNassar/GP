@@ -2,7 +2,7 @@ import 'package:ScaniT/widgets/custom_app_drawer.dart';
 import 'package:flutter/services.dart';
 import '../screens/update_image_screen.dart';
 import '../screens/favourites_screen.dart';
-import '../screens/home_page_screen.dart';
+// import '../screens/home_page_screen.dart';
 import 'package:flutter/material.dart';
 import '../helpers/globals.dart';
 
@@ -31,7 +31,7 @@ class TopTabsScreen extends StatelessWidget {
         //  a GlobalKey to associate it with this Scaffold widget,
         // and use the context from this widget's key when creating the dialog
         // to corrctoly handle pictrue deletion and restoration.
-        key: myGlobals.scaffoldKey,
+
         drawer: CustomAppDrawer(),
         appBar: AppBar(
           title: Text('ScaniT'),
@@ -75,7 +75,7 @@ class TopTabsScreen extends StatelessWidget {
         body: TabBarView(
           children: <Widget>[
             // this first element will be shown AUTOMATICALLY if you press the first 'tab' in the 'tabbar' above
-            HomePageScreen(),
+            // HomePageScreen(),
             // the second element will be shown AUTOMATICALLY if you press the second 'tab' in the 'tabbar' above .. and so on
             FavouritesScreen(),
           ],

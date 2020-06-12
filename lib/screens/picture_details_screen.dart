@@ -1,8 +1,9 @@
-import './update_image_screen.dart';
-
-import '../providers/picture_provider.dart';
+import 'package:ScaniT/helpers/globals.dart';
+import 'package:ScaniT/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/custom_speed_dial.dart';
+import '../providers/picture_provider.dart';
 import '../providers/pictures_provider.dart';
 
 class PictureDetails extends StatelessWidget {
@@ -14,120 +15,136 @@ class PictureDetails extends StatelessWidget {
     // 'modalRoute' to extract the Arguments passed via the routes
     final routeArgument = ModalRoute.of(context).settings.arguments as String;
 
-    // this is to set this class a 'listener' to the 'provider' that is defined in the 'provider' folder.
-    // the 'listen' argument is used to just tap into the provider once when this class is created and
-    // then DO NOT change whenever the provider data changes .. as if I add another picture and
-    // I were in a certain picture list then NOTHING should change for me and I should not rebuild
-    // my picture view.
     final picturesProvider = Provider.of<Pictures>(context, listen: false);
 
     // now I search the 'list' in the 'provider' for the element with the ID sent to my via the route
     // to dynamically retrieve All the picture details instead of passing it around.
     final Picture pictureData = picturesProvider.mFindByID(routeArgument);
+    print('picture DATA = $pictureData');
+    // to avoid deletions[w/o restoration] error.
+    if (pictureData == null)
+      return Scaffold(
+        body: SafeArea(
+          child: Container(
+            alignment: Alignment.center,
+            height: double.infinity,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        ),
+      );
+    final index = picturesProvider.pictureList.indexOf(pictureData);
+    if (index == -1)
+      return Scaffold(
+        body: SafeArea(
+          child: Container(
+            alignment: Alignment.center,
+            height: double.infinity,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        ),
+      );
 
     // 'safearea' to respect any notches or shoit
-    return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          // A list of 'widgets' to scroll through
-          slivers: <Widget>[
-            SliverAppBar(
-              // centerTitle: true,
-              elevation: 4.0,
-              // the height it will have if it's NOT the 'appbar'
-              expandedHeight: 300,
-              // should the appbar remail visibile after you scroll down ?
-              pinned: true,
-              // our new appbar details
-              flexibleSpace: FlexibleSpaceBar(
-                titlePadding: EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 15,
-                ),
-                title: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      16,
+    // creating a provider of 'picture' to access it and change it's fav
+    return ChangeNotifierProvider.value(
+      value: picturesProvider.pictureList[index], //change builder to create
+      child: Consumer<Picture>(
+        builder: (context, provider, child) => Scaffold(
+          body: SafeArea(
+            child: CustomScrollView(
+              // A list of 'widgets' to scroll through
+              slivers: <Widget>[
+                SliverAppBar(
+                  // centerTitle: true,
+                  elevation: 4.0,
+                  // the height it will have if it's NOT the 'appbar'
+                  expandedHeight: 300,
+                  // should the appbar remail visibile after you scroll down ?
+                  pinned: true,
+                  // our new appbar details
+                  flexibleSpace: FlexibleSpaceBar(
+                    titlePadding: EdgeInsets.symmetric(
+                      horizontal: 25,
+                      vertical: 10,
                     ),
-                    color: Theme.of(context).accentColor.withAlpha(150),
-                  ),
-                  padding: const EdgeInsets.only(
-                    right: 9.0,
-                    left: 9.0,
-                    bottom: 2.0,
-                  ),
-                  child: Text(
-                    pictureData.title,
-                    style: Theme.of(context).textTheme.headline6.copyWith(
-                          fontFamily: 'Lobster',
-                          fontWeight: FontWeight.w400,
+                    title: Container(
+                      constraints: BoxConstraints(maxHeight: 60),
+                      alignment: Alignment.bottomLeft,
+                      decoration: BoxDecoration(
+                        // border: Border.all(
+                        //   color: Colors.black,
+                        // ),
+                        borderRadius: BorderRadius.circular(
+                          16,
                         ),
-                  ),
-                ),
-                // what to see if the 'appbar' is expanded
-                background: Hero(
-                  // 'tag' to identify the 'widget' that I wish to animate .. should be unique
-                  tag: pictureData.id,
-                  child: Image.asset(
-                    pictureData.imageURI,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            // the rest of the stuff in the screen
-            SliverList(
-              // 'delegate' to tell flutter how to render the content of the list
-              // 'SliverChildListDelegate' takes a list of items that will not be in the sliver
-              delegate: SliverChildListDelegate(
-                [
-                  // SizedBox(
-                  //   height: 30,
-                  // ),
-                  Container(
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(
-                        color: Colors.black54,
-                        width: 2,
+                        color: Theme.of(context)
+                            .primaryColorLight
+                            .withOpacity(0.2),
+                      ),
+                      padding: const EdgeInsets.only(
+                        right: 9.0,
+                        left: 9.0,
+                        bottom: 2.0,
+                      ),
+                      child: Text(
+                        pictureData.title,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headline6.copyWith(
+                              fontFamily: 'Lobster',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 23,
+                            ),
                       ),
                     ),
-                    child: Text(
-                      pictureData.extractedText,
-                      style: TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                      softWrap: true,
+                    // what to see if the 'appbar' is expanded
+                    background: Hero(
+                      // 'tag' to identify the 'widget' that I wish to animate .. should be unique
+                      tag: pictureData.id,
+                      child: Image.asset(
+                        pictureData.imageURI,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        // Open the 'UpdatePicture Screen'.
-        onPressed: () => Navigator.of(context)
-            .pushNamed(UpdatePictureScreen.routeName, arguments: pictureData),
-        child: Icon(
-          Icons.border_color,
-          size: 24,
-          color: Theme.of(context).textTheme.button.color,
+                ),
+                // the rest of the stuff in the screen
+                SliverList(
+                  // 'delegate' to tell flutter how to render the content of the list
+                  // 'SliverChildListDelegate' takes a list of items that will not be in the sliver
+                  delegate: SliverChildListDelegate(
+                    [
+                      // SizedBox(
+                      //   height: 30,
+                      // ),
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .primaryColorLight
+                              .withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: Colors.black54,
+                            width: 2,
+                          ),
+                        ),
+                        child: Text(
+                          pictureData.extractedText,
+                          style: TextStyle(color: Colors.black),
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          // 'speed dial' to have an action button that opens other action buttons.
+          floatingActionButton: CustomSpeedDial(pictureData: pictureData),
         ),
       ),
     );
   }
 }
-
-// // for a floating custom shape/color container to be put anywhere
-// class TitleClipper extends CustomClipper<Path> {
-//   @override
-//   Path getClip(Size size) {
-//      var path = Path();
-//      path.lineTo(size.width - 20, 0)
-//   }
-
-//   @override
-//   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-// }

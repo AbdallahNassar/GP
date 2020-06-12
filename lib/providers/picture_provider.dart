@@ -34,7 +34,7 @@ class Picture with ChangeNotifier {
     // setting up the url
     final String collectionName = 'favourites';
     final String dataBaseUrl =
-        'https://gp-scanit.firebaseio.com/$collectionName/$userID/$id.json?auth=$authToken'; // setting up the changedData that I want to send .. I only send what I wish to change.
+        'https://gp-scanit.firebaseio.com/$collectionName/$userID/$id.json?auth=$authToken';
     // setting up the changedData that I want to send .. I only send what I wish to replace old val with.
     // 'json.encode' is provided by importing 'dart:convert'
     final jsonProduct = json.encode(isFavourite);
