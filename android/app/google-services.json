@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "377233254535-ddoddl33kr8g3mggqt8vqv24uap8enjl.apps.googleusercontent.com",
+          "client_id": "377233254535-2dga8p0at50fdlth2qq8sgndu37t9tp8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.kayanne.scanit",
-            "certificate_hash": "4fadbe0073254743ee3129ab874ab0d149546c8d"
+            "certificate_hash": "25f9e6af6eea0827a8812432acc459c0830511cb"
           }
         },
         {

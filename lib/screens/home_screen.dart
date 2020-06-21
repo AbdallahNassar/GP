@@ -1,4 +1,5 @@
-import 'package:ScaniT/helpers/globals.dart';
+import '../helpers/globals.dart';
+import '../widgets/home_speed_dial.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
@@ -48,6 +49,7 @@ class HomeScreen extends StatelessWidget {
     // ========================== class parameters ==========================
     // final GlobalKey<ScaffoldState> homeScaffoldKey =
     //     new GlobalKey<ScaffoldState>();
+
     // go get device dimensions
     final deviceSize = MediaQuery.of(context).size;
     // to get user name and picture.
@@ -153,7 +155,9 @@ class HomeScreen extends StatelessWidget {
                 ),
                 // routename to customize empty list message.
                 // flexible to medigate column error .. to restrain it.
-                Flexible(flex: 1, child: HomeScreenGrid(routeName: '/'))
+                Expanded(
+                  child: HomeScreenGrid(routeName: '/'),
+                ),
               ],
             ),
           ),
@@ -162,17 +166,7 @@ class HomeScreen extends StatelessWidget {
       // // bottomNavigationBar: BottomNavigationBar(
       // //   items: ,
       // ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).accentColor,
-        // Open the 'UpdatePicture Screen'.
-        onPressed: () =>
-            Navigator.of(context).pushNamed(UpdatePictureScreen.routeName),
-        child: Icon(
-          Icons.add,
-          size: 30,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: HomeSpeedDial(),
     );
   }
 }

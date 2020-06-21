@@ -128,8 +128,7 @@ class MyApp extends StatelessWidget {
           // THIS is the 'homePage' of the entire application so to speak.
           // check to see if the user is logged in or not
           home: authProvider.isUserAuth
-              // ? TopTabsScreen()
-              ? BottomTapsScreen()
+              ? HomeScreen()
               // the user is NOT logged in .. so i'll check for a token and try to
               // automatically log him in.
               : FutureBuilder(

@@ -19,6 +19,8 @@ class EmptyList extends StatelessWidget {
     // of the Widget it enveloppes.
     return LayoutBuilder(builder: (ctx, constraints) {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           // a 'container' that defines a boundry around it's child 'like the height
           // aattribute iam using below, I can also use it w/o using the 'child' attribure
@@ -34,20 +36,36 @@ class EmptyList extends StatelessWidget {
             ),
           ),
           Container(
-            height: constraints.maxHeight * 0.15,
+            alignment: Alignment.center,
+            // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+            height: constraints.maxHeight * 0.060,
             child: const Text(
-              'YOUR LIST IS\n CURRENTLY EMPTY!\n',
+              'YOUR LIST IS',
               style: const TextStyle(
                   color: Colors.black, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ),
           Container(
-            height: constraints.maxHeight * .2,
+            alignment: Alignment.center,
+            // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+            height: constraints.maxHeight * 0.060,
+            child: const Text(
+              'CURRENTLY EMPTY',
+              style: const TextStyle(
+                  color: Colors.black, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Container(
+            height: constraints.maxHeight * .15,
             child: Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle,
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle2
+                  .copyWith(color: Colors.grey),
             ),
           ),
         ],

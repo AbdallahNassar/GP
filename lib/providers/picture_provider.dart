@@ -1,4 +1,5 @@
 // to get the '@REQUIRED' decorator.
+import 'package:ScaniT/models/place_location.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -12,15 +13,19 @@ class Picture with ChangeNotifier {
   final String title;
   final String extractedText;
   final String imageURI;
+  final PlaceLocation location;
   // to use for filtering
   bool isFavourite;
+
   // ==================================== class constrictor ====================================
-  Picture(
-      {@required this.id,
-      @required this.title,
-      @required this.extractedText,
-      @required this.imageURI,
-      this.isFavourite = false});
+  Picture({
+    @required this.id,
+    @required this.title,
+    @required this.extractedText,
+    @required this.imageURI,
+    this.isFavourite = false,
+    this.location,
+  });
 
   // ==================================== class methods ====================================
   // 'async' to handle the HTTPRequest and not freeze the entire app while i'm trying to connect

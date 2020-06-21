@@ -1,8 +1,6 @@
-import 'package:ScaniT/helpers/globals.dart';
-import 'package:ScaniT/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/custom_speed_dial.dart';
+import '../widgets/picture_speed_dial.dart';
 import '../providers/picture_provider.dart';
 import '../providers/pictures_provider.dart';
 
@@ -77,23 +75,38 @@ class PictureDetails extends StatelessWidget {
                         borderRadius: BorderRadius.circular(
                           16,
                         ),
-                        color: Theme.of(context)
-                            .primaryColorLight
-                            .withOpacity(0.2),
+                        // color: Theme.of(context)
+                        //     .primaryColorLight
+                        //     .withOpacity(0.2),
                       ),
                       padding: const EdgeInsets.only(
                         right: 9.0,
                         left: 9.0,
                         bottom: 2.0,
                       ),
-                      child: Text(
-                        pictureData.title,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headline6.copyWith(
-                              fontFamily: 'Lobster',
-                              fontWeight: FontWeight.w400,
-                              fontSize: 23,
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: pictureData.title,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  .copyWith(
+                                    fontFamily: 'Lobster',
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 23,
+                                  ),
                             ),
+                            TextSpan(
+                              text: '\n${pictureData.location.address}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  .copyWith(fontSize: 14),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     // what to see if the 'appbar' is expanded
@@ -142,7 +155,7 @@ class PictureDetails extends StatelessWidget {
             ),
           ),
           // 'speed dial' to have an action button that opens other action buttons.
-          floatingActionButton: CustomSpeedDial(pictureData: pictureData),
+          floatingActionButton: PictureSpeedDial(pictureData: pictureData),
         ),
       ),
     );

@@ -24,6 +24,8 @@ class Authentication with ChangeNotifier {
   // to store the server side reply
   var _serverResponse;
 
+  // to detect errors in switch statement
+  var _isError = false;
   // instance of 'GoogleSignIn' class to use in 'GooglSignIn' section of this
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   // instance of 'facebooksignin' class to use in 'FacebooLogin' section of this
@@ -83,7 +85,7 @@ class Authentication with ChangeNotifier {
         case 'signInWithPassword':
           return _mNativeSingIn(
               identifier: identifier, email: email, password: password);
-          await _mFetchUserName();
+          // await _mFetchUserName();
           break;
         case 'singInWithGoogle':
           await _mGoogleSignIn(identifier: identifier);
@@ -96,7 +98,7 @@ class Authentication with ChangeNotifier {
               code: 'AUTHENTICATION_ERROR',
               message: 'Wrong Authentication Identifier.');
       }
-      await _mFetchUserName();
+      // await _mFetchUserName();
       // no error .. so every thing is okay .. setUp the token and authenticate the user.
       _authenticateUser(
         token: _serverResponse['idToken'],
@@ -104,7 +106,7 @@ class Authentication with ChangeNotifier {
         userName: _serverResponse['name'],
         userPic: _serverResponse['pictureURL'],
       );
-      // now I save the token on the device such that when the user exits the app and come back he'll still be
+      // now I save the token on the device such that when the user exits t he app and come back he'll still be
       // logged in and can directly use the app .. this will be done with 'sharedPrefrences' package and the
       // function containing it should be async.
       // the following line will give me access to the 'sharedPrefernceces' Object so to say
@@ -150,30 +152,31 @@ class Authentication with ChangeNotifier {
         // I'm throwing my exception with this specific message because I have an idea of the structure of the
         // json response because first I tried to read it and understand it before I decided what to use from it.
         throw CustomHTTPException(message: _serverResponse['error']['message']);
-      }
-      await _mFetchUserName();
-      // no error .. so every thing is okay .. setUp the token and authenticate the user.
-      _authenticateUser(
-        token: _serverResponse['idToken'],
-        userId: _serverResponse['localId'],
-        userName: _serverResponse['name'],
-        userPic: _serverResponse['pictureURL'],
-      );
-      // now I save the token on the device such that when the user exits the app and come back he'll still be
-      // logged in and can directly use the app .. this will be done with 'sharedPrefrences' package and the
-      // function containing it should be async.
-      // the following line will give me access to the 'sharedPrefernceces' Object so to say
-      final sharedPrefs = await SharedPreferences.getInstance();
-      // this will be used to write data TO and FROM the device storage.
-      final jsonUserData = json.encode({
-        '_authToken': _authToken,
-        '_userID': _userID,
-        '_userPicURI': _userPicURI,
-        '_userName': _userName,
-        // stored as 'Iso8601String' to parse it later as 'dateTime'
-      });
+      } else {
+        await _mFetchUserName();
+        // no error .. so every thing is okay .. setUp the token and authenticate the user.
+        _authenticateUser(
+          token: _serverResponse['idToken'],
+          userId: _serverResponse['localId'],
+          userName: _serverResponse['name'],
+          userPic: _serverResponse['pictureURL'],
+        );
+        // now I save the token on the device such that when the user exits the app and come back he'll still be
+        // logged in and can directly use the app .. this will be done with 'sharedPrefrences' package and the
+        // function containing it should be async.
+        // the following line will give me access to the 'sharedPrefernceces' Object so to say
+        final sharedPrefs = await SharedPreferences.getInstance();
+        // this will be used to write data TO and FROM the device storage.
+        final jsonUserData = json.encode({
+          '_authToken': _authToken,
+          '_userID': _userID,
+          '_userPicURI': _userPicURI,
+          '_userName': _userName,
+          // stored as 'Iso8601String' to parse it later as 'dateTime'
+        });
 
-      sharedPrefs.setString('jsonUserData', jsonUserData);
+        sharedPrefs.setString('jsonUserData', jsonUserData);
+      }
     } catch (e) {
       //TODO : handle this and throw erroe
       print(e);

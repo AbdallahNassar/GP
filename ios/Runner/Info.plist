@@ -24,6 +24,10 @@
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Access your location to attach it to the picture.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Access your location to attach it to the picture.</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>

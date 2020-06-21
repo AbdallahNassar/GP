@@ -1,4 +1,5 @@
 import 'package:ScaniT/providers/authentication_provider.dart';
+import 'package:ScaniT/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,7 @@ class CustomAppDrawer extends StatelessWidget {
     AppDrawerItemModel(
         title: 'Home',
         icon: Icon(Icons.home),
-        calledRouteName: TopTabsScreen.routeName),
+        calledRouteName: HomeScreen.routeName),
     AppDrawerItemModel(
         title: 'Options',
         icon: Icon(Icons.settings),

@@ -1,5 +1,4 @@
-import 'package:ScaniT/helpers/globals.dart';
-import 'package:ScaniT/screens/home_screen.dart';
+import '../helpers/globals.dart';
 
 import '../providers/picture_provider.dart';
 import '../providers/pictures_provider.dart';
