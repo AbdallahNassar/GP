@@ -1,3 +1,4 @@
 void main(List<String> args) {
-  // Valu
+  var x = [1, 2];
+  print(x[1]);
 }

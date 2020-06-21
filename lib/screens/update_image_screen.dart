@@ -1,16 +1,22 @@
-import '../widgets/cancel_raised_button.dart';
+import 'dart:io';
 
-import '../providers/pictures_provider.dart';
-import 'package:provider/provider.dart';
-import '../providers/picture_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../widgets/image_input.dart';
+import '../widgets/location_input.dart';
+import '../models/place_location.dart';
+import '../widgets/cancel_raised_button.dart';
+import '../providers/pictures_provider.dart';
+import '../providers/picture_provider.dart';
 
 class UpdatePictureScreen extends StatefulWidget {
   // ========================== class parameters ==========================
   static const routeName = '/update-picture';
-
+  final File chosenPic;
+  // ========================== class consturctor ==========================
+  const UpdatePictureScreen({this.chosenPic});
   // ======================================================================
-
   @override
   _UpdatePictureScreenState createState() => _UpdatePictureScreenState();
 }
@@ -30,22 +36,15 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
 
   // MUST be disposed of after the form terminates .. I added it to Listen to it and when
   // it is changed I reBUild the 'widget' to update the 'image preview'
-  final _imageURLFieldFocusNode = FocusNode();
+  // must be disposed of
+  final _titleFieldController = TextEditingController();
   // MUST be disposed of after the form terminates
   final _extractedTextFieldFocusNode = FocusNode();
-  // MUST be disposed of after the form terminates
-  final _imageURLFieldController = TextEditingController();
+
+  // to store the location where the image was taken
+  PlaceLocation _pickedLocation;
 
   // ========================== class methods ==========================
-  @override
-  void initState() {
-    // MUST dispode of the listener.
-    // I listen to the 'focusNode' and not the 'textFieldController' so that I update the
-    // preview after the focus changes AND NOT after each keyboard strike.
-    _imageURLFieldFocusNode.addListener(_mUpdateImagePreview);
-    super.initState();
-  }
-
   // function that runs after 'init' and before 'build' is executed.
   @override
   void didChangeDependencies() {
@@ -59,32 +58,49 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
         _pictureTemplate = routeArguments;
         // ONlY the 'imageURL' field should take it's initial value like this cuz of the controller
         // otherwise it explodes in my face.
-        _imageURLFieldController.text = routeArguments.imageURI;
       } else
         _pictureTemplate = Picture(
             id: null,
             extractedText: '',
-            imageURI: '',
+            imageURI:
+                widget.chosenPic != null ? widget.chosenPic.absolute.path : '',
             title: '',
             isFavourite: false);
       _isInitState = false;
     }
     super.didChangeDependencies();
   }
+// ======================================================================
 
-  void _mUpdateImagePreview() {
-    if (!_imageURLFieldFocusNode.hasFocus) {
-      if ((!_imageURLFieldController.text.startsWith('http://') &&
-              !_imageURLFieldController.text.startsWith('https://')) ||
-          (!_imageURLFieldController.text.endsWith('.jpeg') &&
-              !_imageURLFieldController.text.endsWith('.jpg') &&
-              !_imageURLFieldController.text.endsWith('.png'))) {
-        // rebuild the 'widgete' to update teh preview of the image
-        return;
-      }
-      setState(() {});
-    }
+  @override
+  void dispose() {
+    // must be MANUALLY dispoded of to avoid memory leaks.
+    _titleFieldController.dispose();
+    _extractedTextFieldFocusNode.dispose();
+    super.dispose();
   }
+
+// ======================================================================
+  // save the selected image into class variable
+  void _selectImage(File pickedImage) {
+    // create a new picture with a diff image uri.
+    _pictureTemplate = _mOverWritepicture(
+      imageUrl: pickedImage,
+    );
+  }
+
+// ======================================================================
+  void _selectPlace(double lat, double lng) {
+    // save the picked location into a variable .. it's done like that as the location
+    // will be a parameter passed around form another widget.
+    _pickedLocation = PlaceLocation(latitude: lat, longitude: lng);
+    // create a new picture with a diff image uri.
+    _pictureTemplate = _mOverWritepicture(
+      location: _pickedLocation,
+    );
+  }
+
+// ======================================================================
 
   Future<void> _mSubmitForm() async {
     // this will now Executer the 'Validator' function on every 'textFormField'.
@@ -160,9 +176,9 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
       });
     }
   }
+// ======================================================================
 
-  String _mValidateInput(
-      {String title, String extractedText, String imageUrl}) {
+  String _mValidateInput({String title}) {
     // 'title' Validation
     if (title != null) {
       if (title.isNotEmpty &&
@@ -177,48 +193,15 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
       }
     }
 
-    // 'extractedText' Validation
-    else if (extractedText != null) {
-      if (extractedText.isEmpty) {
-        return 'Please enter a extractedText.';
-      }
-      if (extractedText.length < 1) {
-        print(extractedText);
-        return 'extractedText should be at least 1 characters long.';
-      }
-      return null;
-    }
-
-    // 'imageUrl' Validation
-    else if (imageUrl != null) {
-      // if (imageUrl.isEmpty) {
-      //   return 'Please enter an imageUrl.';
-      // }
-      // if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
-      //   return 'Please enter a valid URL.';
-      // }
-      // if (!imageUrl.endsWith('.jpeg') &&
-      //     !imageUrl.endsWith('.jpg') &&
-      //     !imageUrl.endsWith('.png')) {
-      //   return 'Please enter a valid URL.';
-      // }
-      // var urlPattern =
-      //     r"(https?|ftp)://([-A-Z0-9.]+)(/[-A-Z0-9+&@#/%=~_|!:,.;]*)?(\?[A-Z0-9+&@#/%=~_|!:‌​,.;]*)?";
-      // var result =
-      //     new RegExp(urlPattern, caseSensitive: false).firstMatch(imageUrl);
-      // if (result == null) {
-      //   return 'Please enter a valid URL.';
-      // }
-      return null;
-    }
     return null;
   }
 
+// ======================================================================
   // to over write the 'existing' picture with the new value passed to it.
   // this will now change only the ONE value passed to it .. AND Leave the
   // rest of the parameters as is because i'll pass them with null.
   Picture _mOverWritepicture(
-      {id, extractedText, imageUrl, title, isFavourite}) {
+      {id, extractedText, imageUrl, title, isFavourite, location}) {
     // I don't update the exisiting picture cuz it's values are all final, so create a new one.
 
     return Picture(
@@ -230,21 +213,15 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
       title: title != null ? title : _pictureTemplate.title,
       isFavourite:
           isFavourite != null ? isFavourite : _pictureTemplate.isFavourite,
+      location: location != null ? location : _pictureTemplate.location,
     );
   }
-
-  @override
-  void dispose() {
-    // must be MANUALLY dispoded of to avoid memory leaks.
-    _extractedTextFieldFocusNode.dispose();
-    _imageURLFieldController.dispose();
-    _imageURLFieldFocusNode.removeListener(_mUpdateImagePreview);
-    _imageURLFieldFocusNode.dispose();
-    super.dispose();
-  }
+// ======================================================================
 
   @override
   Widget build(BuildContext context) {
+    // get the devices' dimensions
+    final deviceSize = MediaQuery.of(context).size;
     // returns a 'scaffold' cuz this 'widget' is a screen.
     return Scaffold(
         appBar: AppBar(
@@ -266,7 +243,10 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
             // instead I use a 'column' with a 'singleChildScrollView'
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.only(
+                  left: 15,
+                  right: 15,
+                ),
                 child: Column(
                   children: <Widget>[
                     // Best Suited with the 'form' and is connected to it behind the scenes.
@@ -288,9 +268,11 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                       // 'Next' Means that it will take me to the next field and not finish.
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) =>
-                          // this allows me to go to the specified 'foucsNode' when I submit this text field.
-                          FocusScope.of(context)
-                              .requestFocus(_extractedTextFieldFocusNode),
+                          // this allows me to go to the  cified 'foucsNode' when I submit this text field.
+                          FocusScope.of(context).requestFocus(
+                              _pictureTemplate.id == null
+                                  ? null
+                                  : _extractedTextFieldFocusNode),
                       validator: (val) => _mValidateInput(title: val),
                       onSaved: (newValue) =>
                           // I call the function with ONLY the parameter I wish to change .. and the rest will be null
@@ -298,17 +280,15 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                         title: newValue,
                       ),
                     ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
+
                     TextFormField(
                       style: Theme.of(context).textTheme.headline6,
                       initialValue: _pictureTemplate == null
-                          ? null
+                          ? 'READ ONLY'
                           : _pictureTemplate.extractedText,
                       keyboardType: TextInputType.multiline,
                       // max number of 'viewable' lines of text .. the user can scroll to view more.
-                      maxLines: 3,
+                      maxLines: 2,
                       decoration: InputDecoration(
                         // the 'Hint' shown above the text filed input
                         labelText: 'extractedText',
@@ -319,75 +299,32 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                           _pictureTemplate = _mOverWritepicture(
                         extractedText: newValue,
                       ),
-                      validator: (val) => _mValidateInput(extractedText: val),
-
-                      // No need for the Icon shown on the keyboard when I press on this field ..
-                      // as it will automatically move me to the next line.
+                      // enable editing after the text has been successfully extracted.
+                      enabled: _pictureTemplate.id == null ? false : true,
                     ),
                     SizedBox(
-                      height: 8.0,
+                      height: deviceSize.height * 0.04,
                     ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.center,
-                          width: 100,
-                          height: 100,
-                          margin: const EdgeInsets.symmetric(vertical: 20),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 1),
-                              borderRadius: BorderRadius.circular(15)),
-                          child:
-                              // previrew the image when the user types the url .. other than that show a txt.
-                              _imageURLFieldController.text.isEmpty
-                                  ? Text('Enter a URL',
-                                      textAlign: TextAlign.center)
-                                  : Image.asset(
-                                      _imageURLFieldController.text,
-                                      fit: BoxFit.contain,
-                                    ),
-                        ),
-                        SizedBox(
-                          width: 28,
-                        ),
-                        // 'Expanded' here cuz An InputDecorator, which is typically created by a TextField,
-                        // cannot have an unbounded width .. and it's inside of a 'Row' so..
-                        Expanded(
-                          child: TextFormField(
-                            style: Theme.of(context).textTheme.headline6,
-                            // initialValue: routeArgument.imageUrl == null ? 'HE' :  routeArgument.imageUrl,
-                            decoration: InputDecoration(labelText: 'ImageURL'),
-                            keyboardType: TextInputType.url,
-                            textInputAction: TextInputAction.done,
-                            // we add 'controller' to get the value of the field before the value is submitted.
-                            controller: _imageURLFieldController,
-                            // options to show above the 'textField'
-                            focusNode: _imageURLFieldFocusNode,
-
-                            toolbarOptions: ToolbarOptions(
-                                paste: true,
-                                copy: true,
-                                cut: true,
-                                selectAll: true),
-                            onSaved: (newValue) =>
-                                _pictureTemplate = _mOverWritepicture(
-                              imageUrl: newValue,
-                            ),
-                            validator: (val) => _mValidateInput(imageUrl: val),
-                          ),
-                        ),
-                      ],
+                    ImageInput(
+                      onSelectImage: _selectImage,
+                      initialImage:
+                          widget.chosenPic ?? File(_pictureTemplate.imageURI),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: deviceSize.height * 0.04,
+                    ),
+                    LocationInput(
+                        onSelectPlace: _selectPlace,
+                        initialLocation: _pictureTemplate.location),
+                    SizedBox(
+                      height: deviceSize.height * 0.025,
                     ),
                     if (_isLoading)
                       CircularProgressIndicator(
                         backgroundColor: Theme.of(context).primaryColor,
                       ),
                     SizedBox(
-                      height: 40,
+                      height: deviceSize.height * 0.01,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

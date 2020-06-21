@@ -34,7 +34,8 @@ class DrawerItem extends StatelessWidget {
             leading: drawerItem.icon,
             title: Text(
               drawerItem.title,
-              style: Theme.of(context).textTheme.title.copyWith(fontSize: 16),
+              style:
+                  Theme.of(context).textTheme.headline3.copyWith(fontSize: 16),
             ),
             onTap: () {
               // handle 'log Out' action has special treatment

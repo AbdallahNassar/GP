@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
+import '../helpers/location_helper.dart';
+import '../models/place_location.dart';
 import '../models/custom_http_exception.dart';
 import './picture_provider.dart';
 
@@ -91,6 +92,12 @@ class Pictures with ChangeNotifier {
           extractedText: itemMap['extractedText'],
           imageURI: itemMap['imageURI'],
           title: itemMap['title'],
+          location: PlaceLocation(
+            latitude: itemMap['loc_lat'],
+            longitude: itemMap['loc_lng'],
+            address: itemMap['address'],
+          ),
+
           // chech whether or not the user has any favourite items or not .. then it checks
           // whether or not we have an entry in the favoutire list for the item with this id
           // and if that's the case the I use it otherwise I just put it as false;
@@ -116,6 +123,21 @@ class Pictures with ChangeNotifier {
     // 'url' is the databaseHandler or Pointer .. that I will talk to the database's webserver through.
     final String dataBaseUrl =
         'https://gp-scanit.firebaseio.com/$collectionName.json?auth=$authToken';
+
+    // I convert the location from (lat,long)  into a human readable address after
+    // I check if a locatin was provided by the user or not [maybe he declided the
+    final locAddress = picture.location == null
+        ? null
+        : await LocationHelper.getPlaceAddress(
+            picture.location.latitude, picture.location.longitude);
+    // create a new location with a human readable address
+    final updatedLocation = picture.location == null
+        ? null
+        : PlaceLocation(
+            latitude: picture.location.latitude,
+            longitude: picture.location.longitude,
+            address: locAddress);
+    // create a new place
     // this is a built-in library that will convert Item --into--> Json.
     final jsonPicture = json.encode({
       // no ID as i'll be using the ID generated automatically for me by the fireDataBase.
@@ -124,6 +146,9 @@ class Pictures with ChangeNotifier {
       'extractedText': picture.extractedText,
       'imageURI': picture.imageURI,
       'title': picture.title,
+      'loc_lat': picture.location == null ? null : updatedLocation.latitude,
+      'loc_lng': picture.location == null ? null : updatedLocation.longitude,
+      'address': picture.location == null ? null : updatedLocation.address,
     });
 
     // if I want to restore a deleted picture .. I should also restore it's favourite status
@@ -154,6 +179,7 @@ class Pictures with ChangeNotifier {
         imageURI: picture.imageURI,
         title: picture.title,
         isFavourite: oldFavStat,
+        location: picture.location,
       );
       if (identifier == 'Add')
         userPictures.insert(0, newPicture);
@@ -170,6 +196,20 @@ class Pictures with ChangeNotifier {
   }
 
   Future<void> mUpdatePicture(Picture picture) async {
+    // I convert the location from (lat,long)  into a human readable address after
+    // I check if a locatin was provided by the user or not [maybe he declided the
+    final locAddress = picture.location == null
+        ? null
+        : await LocationHelper.getPlaceAddress(
+            picture.location.latitude, picture.location.longitude);
+    // create a new location with a human readable address
+    final updatedLocation = picture.location == null
+        ? null
+        : PlaceLocation(
+            latitude: picture.location.latitude,
+            longitude: picture.location.longitude,
+            address: locAddress);
+
     final String collectionName = 'pictures';
     final dataBaseUrl =
         'https://gp-scanit.firebaseio.com/$collectionName/${picture.id}.json?auth=$authToken';
@@ -177,6 +217,9 @@ class Pictures with ChangeNotifier {
       'extractedText': picture.extractedText,
       'imageURI': picture.imageURI,
       'title': picture.title,
+      'loc_lat': picture.location == null ? null : updatedLocation.latitude,
+      'loc_lng': picture.location == null ? null : updatedLocation.longitude,
+      'address': picture.location == null ? null : updatedLocation.address,
     });
     // I handle the error this way as the database only throws an error with 'post' and 'get'
     final response = await http.patch(dataBaseUrl, body: jsonpicture);

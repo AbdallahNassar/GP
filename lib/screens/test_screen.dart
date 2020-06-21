@@ -1,29 +1,19 @@
 import 'package:flutter/material.dart';
-import '../widgets/custom_app_drawer.dart';
+import '../widgets/flare_button.dart';
 
-class TestScreen extends StatelessWidget {
+// flare widgets must be statful, duh!
+class TestScreen extends StatefulWidget {
   // ========================== class parameters ==========================
-  static const routeName = '/test';
+  static String routeName = '/test';
   // ======================================================================
+
+  @override
+  _TestScreenState createState() => _TestScreenState();
+}
+
+class _TestScreenState extends State<TestScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Test'),
-      ),
-      drawer: CustomAppDrawer(),
-      body: SafeArea(
-        child: Center(
-          child: SizedBox(
-            height: 15,
-            child: CircularProgressIndicator(
-              semanticsLabel: 'HA',
-              semanticsValue: 'hae',
-              // strokeWidth: 4,
-            ),
-          ),
-        ),
-      ),
-    );
+    return Scaffold();
   }
 }
