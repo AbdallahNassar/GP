@@ -1,10 +1,9 @@
-import 'package:ScaniT/widgets/custom_app_drawer.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../widgets/custom_app_drawer.dart';
 import '../screens/update_image_screen.dart';
 import '../screens/favourites_screen.dart';
-// import '../screens/home_page_screen.dart';
-import 'package:flutter/material.dart';
-import '../helpers/globals.dart';
 
 class TopTabsScreen extends StatelessWidget {
   static const routeName = '/top-tabs';
@@ -49,7 +48,7 @@ class TopTabsScreen extends StatelessWidget {
           // the 'tabbar' to be shown at the 'bottom' of the appbar
           bottom: TabBar(
             labelColor: Theme.of(context).accentColor,
-            unselectedLabelColor: Theme.of(context).textTheme.body1.color,
+            // unselectedLabelColor: Theme.of(context).textTheme.body1.color,
             // labelStyle: Theme.of(context).textTheme.body1,
             // 'tabs' takes a list of 'tab widgets' and each one will be a 'tab'
             tabs: <Widget>[

@@ -31,17 +31,16 @@ class _FormPasswordFieldState extends State<FormPasswordField> {
     // to get device dimensions
     final deviceSize = MediaQuery.of(context).size;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 7.0),
-      padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
+      margin: const EdgeInsets.symmetric(vertical: 5.0),
+      padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 20.0),
       width: deviceSize.width * 0.8,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: Theme.of(context).primaryColorLight),
       child: TextFormField(
-        style: Theme.of(context)
-            .textTheme
-            .headline1
-            .copyWith(fontSize: 17, letterSpacing: 0.5),
+        style: Theme.of(context).textTheme.headline1.copyWith(
+              fontSize: 17,
+            ),
         cursorColor: Theme.of(context).primaryColor,
         decoration: InputDecoration(
           icon: Icon(

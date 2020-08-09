@@ -1,13 +1,10 @@
-import 'package:ScaniT/screens/bottom_tabs_screen.dart';
-
-import './screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import './screens/home_screen.dart';
 import './providers/pictures_provider.dart';
 import './providers/authentication_provider.dart';
-
 import './screens/signup_screen.dart';
-import './screens/test_screen.dart';
 import './screens/welcome_screen.dart';
 import './screens/about_screen.dart';
 import './screens/update_image_screen.dart';

@@ -1,10 +1,9 @@
-import 'package:ScaniT/providers/authentication_provider.dart';
-import 'package:ScaniT/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/authentication_provider.dart';
+import '../screens/home_screen.dart';
 import '../models/drawer_item_model.dart';
-import '../screens/top_tabs_screen.dart';
 import '../screens/about_screen.dart';
 import '../screens/welcome_screen.dart';
 import '../screens/options_screen.dart';
@@ -40,7 +39,6 @@ class CustomAppDrawer extends StatelessWidget {
             authProvider.userName.substring(1) ??
         'there';
 
-    // print(userName[0].toUpperCase() + userName.substring(1));
     // to register what's the current screeen I was viewing before I pressed on the app drawer
     // so that If I press on the same screen that I'm already in .. I simply pop the app drawer
     final callerRoute = ModalRoute.of(context).settings.name.toString();

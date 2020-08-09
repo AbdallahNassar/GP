@@ -10,8 +10,7 @@ class LocationInput extends StatefulWidget {
   // ========================== class parameters ==========================
   final Function onSelectPlace;
   final PlaceLocation initialLocation;
-  // to show a loading bar while the I fetch the location.
-  var _isLoading = false;
+
   // ========================== class constructor ==========================
   LocationInput({this.onSelectPlace, this.initialLocation});
   // ===================================================================
@@ -22,6 +21,8 @@ class LocationInput extends StatefulWidget {
 class _LocationInputState extends State<LocationInput> {
   // ========================== class parameters ==========================
   String _previewImageUrl;
+  // to show a loading bar while the I fetch the location.
+  var _isLoading = false;
   // ========================== class methods ==========================
   // to show a preview of the initial location once the widget is built
   @override
@@ -39,7 +40,7 @@ class _LocationInputState extends State<LocationInput> {
       longitude: lng,
     );
     setState(() {
-      widget._isLoading = false;
+      _isLoading = false;
       _previewImageUrl = staticMapImageUrl;
     });
   }
@@ -50,7 +51,7 @@ class _LocationInputState extends State<LocationInput> {
     try {
       // setstate to show a loading spinner
       setState(() {
-        widget._isLoading = true;
+        _isLoading = true;
       });
       // get user location .. latitude and longitude
       final locData = await Location().getLocation();
@@ -105,7 +106,7 @@ class _LocationInputState extends State<LocationInput> {
           decoration: BoxDecoration(
             border: Border.all(width: 1, color: Colors.grey),
           ),
-          child: (widget._isLoading == true)
+          child: (_isLoading == true)
               ? CircularProgressIndicator()
               : _previewImageUrl == null
                   ? Text(

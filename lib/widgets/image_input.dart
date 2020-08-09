@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as sysPath;
@@ -45,10 +46,28 @@ class _ImageInputState extends State<ImageInput> {
       // internal device storage.
       final savedImage = await _image.copy('${appDir.path}/$fileName');
       // forward the image to the main screen to use it.
-      widget.onSelectImage(savedImage);
+      // crop the image
+      final cropImg = await _mCropImg(savedImage);
+      // forward the image to the main screen to use it.
+      widget.onSelectImage(cropImg);
     } catch (e) {
       print('Error @ picking image,$e');
+      return null;
     }
+  }
+
+  Future<File> _mCropImg(savedImage) async {
+    File _croppedImg = await ImageCropper.cropImage(
+      sourcePath: savedImage.path,
+      androidUiSettings: AndroidUiSettings(
+          statusBarColor: Theme.of(context).primaryColor,
+          toolbarColor: Theme.of(context).primaryColor,
+          toolbarWidgetColor: Colors.white,
+          // backgroundColor: Theme.of(context).primaryColor.withOpacity(0.3),
+          toolbarTitle: 'Crop It'),
+    );
+
+    return _croppedImg ?? savedImage;
   }
 
   // ======================================================================

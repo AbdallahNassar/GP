@@ -1,4 +1,5 @@
 // this file will manage all our users' logic [Log in - Log out - SignUP]
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -24,8 +25,6 @@ class Authentication with ChangeNotifier {
   // to store the server side reply
   var _serverResponse;
 
-  // to detect errors in switch statement
-  var _isError = false;
   // instance of 'GoogleSignIn' class to use in 'GooglSignIn' section of this
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   // instance of 'facebooksignin' class to use in 'FacebooLogin' section of this
@@ -83,7 +82,7 @@ class Authentication with ChangeNotifier {
           await _mAddUserName(userName: userName);
           break;
         case 'signInWithPassword':
-          return _mNativeSingIn(
+          await _mNativeSingIn(
               identifier: identifier, email: email, password: password);
           // await _mFetchUserName();
           break;
@@ -92,6 +91,9 @@ class Authentication with ChangeNotifier {
           break;
         case 'singInWithFacebook':
           await _mFacebookSignIn(identifier: identifier);
+          break;
+        case 'Anon':
+          await _mAnonSignIn(identifier: identifier);
           break;
         default:
           throw PlatformException(
@@ -121,10 +123,13 @@ class Authentication with ChangeNotifier {
       });
 
       sharedPrefs.setString('jsonUserData', jsonUserData);
+    } on CustomHTTPException catch (e) {
+      print('throwing the corrext type of exception');
+      throw CustomHTTPException(message: e.message);
+    } on PlatformException catch (e) {
+      throw PlatformException(code: e.code, message: e.message);
     } catch (e) {
-      // throw PlatformException(code: 'AUTHENTICATION_ERROE',message: e.message);
-      // TODO: uncomment to above
-      print('Error occured @ authentication_provider.dart, $e');
+      throw PlatformException(code: 'AUTHENTICATION_ERROE', message: e.message);
     }
   }
 
@@ -142,8 +147,9 @@ class Authentication with ChangeNotifier {
       final jsonRequest = json.encode(
           {'email': email, 'password': password, 'returnSecureToken': true});
       // send the request and receive the response in 'JSON' format
-      final jsonResponse =
-          await http.post(authenticationURL, body: jsonRequest);
+      final jsonResponse = await http
+          .post(authenticationURL, body: jsonRequest)
+          .timeout(Duration(seconds: 10));
 
       // extract the data from the 'Json' object into a Map
       _serverResponse = json.decode(jsonResponse.body);
@@ -178,15 +184,23 @@ class Authentication with ChangeNotifier {
         sharedPrefs.setString('jsonUserData', jsonUserData);
       }
     } catch (e) {
-      //TODO : handle this and throw erroe
-      print(e);
+      if (e.runtimeType == TimeoutException) {
+        throw PlatformException(
+          code: 'TIMEOUT_ERROR',
+          message: 'Timeout Error, Please try again later.',
+        );
+      } else {
+        throw CustomHTTPException(
+            message: e.toString() ?? 'Something went wrong.');
+      }
     }
   }
 
   Future<void> _mGoogleSignIn({identifier}) async {
     try {
       // this opens the 'google sign in' page handles the Gmail and password
-      final GoogleSignInAccount googleAccount = await _googleSignIn.signIn();
+      final GoogleSignInAccount googleAccount =
+          await _googleSignIn.signIn().timeout(Duration(seconds: 10));
       // check to see if everything went okay
       if (googleAccount != null) {
         // also handles the 'google sign in' popup view
@@ -210,17 +224,50 @@ class Authentication with ChangeNotifier {
           };
         }
       } else {
-        // throw PlatformException(
-        //    code: 'ERROR_IN_GOOGLE_SIGNIN',
-        //    message: 'User calceled the signin',
-        // );
-        // TODO: uncomment to above
-        print('Error occured @ authentication_provider.dart');
+        throw PlatformException(
+          code: 'ERROR_IN_GOOGLE_SIGNIN',
+          message: 'User calceled the Signin',
+        );
       }
     } catch (e) {
-      // throw PlatformException(code: 'AUTHENTICATION_ERROE',message: e.message);
-      // TODO: uncomment to above
-      print('Error occured @ authentication_provider.dart');
+      if (e.runtimeType == TimeoutException) {
+        print('should throw timeout erro');
+        throw PlatformException(
+          code: 'TIMEOUT_ERROR',
+          message: 'Timeout Error, Please try again later.',
+        );
+      } else
+        throw PlatformException(
+            code: 'AUTHENTICATION_ERROE', message: e.message);
+    }
+  }
+
+  Future<void> _mAnonSignIn({identifier}) async {
+    try {
+      // this opens the 'google sign in' page handles the Gmail and password
+      final authResult =
+          await _mAuth.signInAnonymously().timeout(Duration(seconds: 10));
+      print(authResult.user.uid);
+      if (authResult.user.isAnonymous) {
+        final userToken = await authResult.user.getIdToken();
+
+        _serverResponse = {
+          'idToken': userToken.token,
+          'localId': authResult.user.uid,
+          'pictureURL': authResult.user.photoUrl,
+          'name': 'there',
+        };
+      }
+    } catch (e) {
+      if (e.runtimeType == TimeoutException) {
+        print('should throw timeout erro');
+        throw PlatformException(
+          code: 'TIMEOUT_ERROR',
+          message: 'Timeout Error, Please try again later.',
+        );
+      } else
+        throw PlatformException(
+            code: 'AUTHENTICATION_ERROE', message: e.message);
     }
   }
 
@@ -238,13 +285,12 @@ class Authentication with ChangeNotifier {
 //     break;
 // }
     try {
-      // this opens the 'google sign in' page handles the Gmail and password
+      // this opens the 'facebook sign in' page handles the Gmail and password
       final result = await _facebookLogin.logInWithReadPermissions(['email']);
       // check to see if everything went okay
       if (result.accessToken != null) {
         // also handles the communtication betweeen firebase and Google
         // this signs the user in and puts his data in firebase
-
         final authResult = await _mAuth.signInWithCredential(
           FacebookAuthProvider.getCredential(
             accessToken: result.accessToken.token,
@@ -260,17 +306,21 @@ class Authentication with ChangeNotifier {
           'name': authResult.additionalUserInfo.profile['first_name'],
         };
       } else {
-        // throw PlatformException(
-        //    code: 'ERROR_IN_GOOGLE_SIGNIN',
-        //    message: 'User calceled the signin',
-        // );
-        // TODO: uncomment to above
-        print('Error occured @ authentication_provider.dart 1s');
+        throw PlatformException(
+          code: 'ERROR_IN_GOOGLE_SIGNIN',
+          message: 'User calceled the Signin',
+        );
       }
     } catch (e) {
-      // throw PlatformException(code: 'AUTHENTICATION_ERROE',message: e.message);
-      // TODO: uncomment to above
-      print('Error occured @ authentication_provider.dart ${e.message}');
+      if (e.runtimeType == TimeoutException) {
+        print('should throw timeout erro');
+        throw PlatformException(
+          code: 'TIMEOUT_ERROR',
+          message: 'Timeout Error, Please try again later.',
+        );
+      } else
+        throw PlatformException(
+            code: 'AUTHENTICATION_ERROE', message: e.message);
     }
   }
 
@@ -278,21 +328,47 @@ class Authentication with ChangeNotifier {
     // I need to return the future that actually does the work so that the spinnder works correctly,
     // so I return the 'future' which I get as the return value of the method 'authenticate' ..
     // otherwise I automatically return the 'future' of the 'signUp' method.
-    await mAuthenticate(
-        email: email,
-        password: password,
-        identifier: 'signUp',
-        userName: username);
+    try {
+      await mAuthenticate(
+          email: email,
+          password: password,
+          identifier: 'signUp',
+          userName: username);
+    } catch (e) {
+      if (e.runtimeType == PlatformException) {
+        throw PlatformException(
+          code: 'TIMEOUT_ERROR',
+          message: 'Timeout Error, Please try again later.',
+        );
+      } else {
+        throw CustomHTTPException(message: e.toString());
+      }
+    }
   }
 
   Future<void> mLogin(String email, String password) async {
-    await mAuthenticate(
-        email: email, password: password, identifier: 'signInWithPassword');
+    try {
+      await mAuthenticate(
+          email: email, password: password, identifier: 'signInWithPassword');
+    } catch (e) {
+      if (e.runtimeType == PlatformException) {
+        throw PlatformException(
+          code: 'TIMEOUT_ERROR',
+          message: 'Timeout Error, Please try again later.',
+        );
+      } else {
+        throw CustomHTTPException(message: e.toString());
+      }
+    }
   }
 
   // to login with google/facebook/twitter
   Future<void> mAPILogin({identifier}) async {
-    await mAuthenticate(identifier: identifier);
+    try {
+      await mAuthenticate(identifier: identifier);
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future<void> _mAddUserName({String userName}) async {
@@ -304,15 +380,23 @@ class Authentication with ChangeNotifier {
     final jsonUserName = json.encode(userName);
 
     try {
-      final response = await http.put(dataBaseUrl, body: jsonUserName);
+      final response = await http
+          .put(dataBaseUrl, body: jsonUserName)
+          .timeout(Duration(seconds: 10));
 
       if (response.statusCode >= 400) {
         print('Error in adding username to databse.');
       }
       // T'll leave this here to handle any 'network' error or smthing.
-    } catch (error) {
-      // there's an error .. roll back the changes.
-      print('Error in adding username to databse.');
+    } catch (e) {
+      if (e.runtimeType == TimeoutException) {
+        throw PlatformException(
+          code: 'TIMEOUT_ERROR',
+          message: 'Timeout Error, Please try again later.',
+        );
+      } else
+        throw PlatformException(
+            code: 'AUTHENTICATION_ERROE', message: e.message);
     }
   }
 
@@ -322,7 +406,8 @@ class Authentication with ChangeNotifier {
         'https://gp-scanit.firebaseio.com/$collectionName/${_serverResponse['localId']}.json?auth=${_serverResponse['idToken']}';
     try {
       // get the data in the dataBaseUrl
-      final response = await http.get(dataBaseUrl);
+      final response =
+          await http.get(dataBaseUrl).timeout(Duration(seconds: 10));
       // convert them FROM json INTO Map<String,dynamic> OR Map<String,dynamic>
       final respUserName = json.decode(response.body);
       // to not throw an error when the list is empty
@@ -332,7 +417,15 @@ class Authentication with ChangeNotifier {
       }
       _userName = respUserName;
     } catch (e) {
-      throw e;
+      if (e.runtimeType == TimeoutException) {
+        print('should throw timeout erro');
+        throw PlatformException(
+          code: 'TIMEOUT_ERROR',
+          message: 'Timeout Error, Please try again later.',
+        );
+      } else
+        throw PlatformException(
+            code: 'AUTHENTICATION_ERROE', message: e.toString());
     }
   }
 
@@ -369,7 +462,15 @@ class Authentication with ChangeNotifier {
       await _mAuth.signOut();
       await _facebookLogin.logOut();
     } catch (e) {
-      print('Error @ logging out, $e.messge');
+      if (e.runtimeType == TimeoutException) {
+        print('should throw timeout erro');
+        throw PlatformException(
+          code: 'TIMEOUT_ERROR',
+          message: 'Timeout Error, Please try again later.',
+        );
+      } else
+        throw PlatformException(
+            code: 'AUTHENTICATION_ERROE', message: e.message);
     }
 
     notifyListeners();
@@ -381,12 +482,10 @@ class Authentication with ChangeNotifier {
       // remove everything
       sharedPrefs.clear();
     } catch (e) {
-      // throw PlatformException(
-      //   code: 'SIGN_OUT_ERROR',
-      //   message: 'Error Clearing the SharedPrefrences',
-      // );
-      //TODO: remove comments of above
-      print('Error Clearing the SharedPrefrences');
+      throw PlatformException(
+        code: 'SIGN_OUT_ERROR',
+        message: 'Error Clearing the SharedPrefrences',
+      );
     }
   }
 

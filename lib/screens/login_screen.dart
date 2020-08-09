@@ -55,17 +55,17 @@ class LoginScreen extends StatelessWidget {
                     // sitting giril SVG image
                     SvgPicture.asset(
                       'assets/icons/login.svg',
-                      height: deviceSize.height * 0.3,
+                      height: deviceSize.height * 0.27,
                       alignment: Alignment.center,
                     ),
                     SizedBox(
-                      height: deviceSize.height * 0.035,
+                      height: deviceSize.height * 0.02,
                     ),
                     // theis where the authentication logic is handled
                     LoginScreenForm(),
                     // =====================================
                     SizedBox(
-                      height: deviceSize.height * 0.02,
+                      height: deviceSize.height * 0.01,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -93,9 +93,12 @@ class LoginScreen extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      height: deviceSize.height * 0.02,
+                      height: deviceSize.height * 0.01,
                     ),
                     ORDivider(),
+                    SizedBox(
+                      height: deviceSize.height * 0.01,
+                    ),
                     APISign()
                   ],
                 ),

@@ -1,10 +1,11 @@
-import 'package:ScaniT/widgets/form_button.dart';
+import 'package:flutter/services.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/form_button.dart';
 import '../widgets/form_password_field.dart';
 import '../widgets/form_text_field.dart';
-import '../screens/top_tabs_screen.dart';
 import '../models/custom_http_exception.dart';
 import '../providers/authentication_provider.dart';
 
@@ -47,7 +48,8 @@ class _SignUpFormState extends State<SignUpForm> {
         context: context,
         builder: (ctx) => AlertDialog(
               title: Text('An Error Occurred!'),
-              content: Text(errorMessage),
+              content: Text(errorMessage ??
+                  'Could not authenticate you. Please try again later.'),
               actions: <Widget>[
                 FlatButton(
                   child: Text('Ok'),
@@ -88,12 +90,13 @@ class _SignUpFormState extends State<SignUpForm> {
       } else if (error.toString().contains('INVALID_PASSWORD')) {
         errorMessage = 'Invalid password.';
       }
-      print('Error  Message @ auth card: $errorMessage');
       _showErroDialog(errorMessage: errorMessage);
+    } on PlatformException catch (error) {
+      print('should be here');
+      _showErroDialog(errorMessage: error.message);
     } catch (error) {
       const String errorMessage =
           'Could not authenticate you. Please try again later.';
-      print('Error  Message @ auth card: $errorMessage');
       _showErroDialog(errorMessage: errorMessage);
     }
 
@@ -139,6 +142,11 @@ class _SignUpFormState extends State<SignUpForm> {
             isLoading: _isLoading,
             submitMethod: _submit,
           ),
+          // to add a sized box when the 'sign up' button is removed.
+          if (_isLoading == true)
+            SizedBox(
+              height: 20,
+            ),
         ],
       ),
     );

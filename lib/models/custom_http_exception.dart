@@ -9,7 +9,6 @@ class CustomHTTPException {
   // to return my own message when I call this custom exception.
   @override
   String toString() {
-    // TODO: implement toString
     return message;
   }
 
