@@ -5,7 +5,7 @@ class ORDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 7.0),
+      margin: const EdgeInsets.symmetric(vertical: 3.0),
       width: deviceSize.width * 0.75,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

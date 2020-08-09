@@ -307,6 +307,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                     ),
                     ImageInput(
                       onSelectImage: _selectImage,
+                      // show the choosen image if it existed.
                       initialImage:
                           widget.chosenPic ?? File(_pictureTemplate.imageURI),
                     ),

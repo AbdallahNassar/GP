@@ -1,10 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/authentication_provider.dart';
 import '../providers/picture_provider.dart';
 import '../screens/picture_details_screen.dart';
-import './custom_delete_icon.dart';
 
 class PictureItem extends StatelessWidget {
   // ========================== class parameters ==========================
@@ -42,8 +42,7 @@ class PictureItem extends StatelessWidget {
               border: Border.all(color: Colors.grey, width: 1),
               borderRadius: BorderRadius.circular(25),
               image: DecorationImage(
-                // TODO: convert to network image,
-                image: AssetImage(picture.imageURI),
+                image: FileImage(File(picture.imageURI)),
                 fit: BoxFit.fill,
               ),
             ),
@@ -54,7 +53,7 @@ class PictureItem extends StatelessWidget {
                 tag: picture.id,
                 child: FadeInImage(
                   placeholder: AssetImage('assets/images/oops.jpg'),
-                  image: AssetImage(picture.imageURI),
+                  image: FileImage(File(picture.imageURI)),
                   fit: BoxFit.cover,
                 ),
               ),

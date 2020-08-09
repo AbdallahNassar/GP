@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as sysPath;
@@ -23,21 +24,34 @@ class HomeSpeedDial extends StatelessWidget {
       if (pickedImage == null) return null;
       // everything is ok
       final File _image = File(pickedImage.path);
-      return _image;
-      // // saving the image to the device storage.
-      // // get the app directory in the physical device storage
-      // final appDir = await sysPath.getApplicationDocumentsDirectory();
-      // // this will give me the image name and extension
-      // final fileName = path.basename(pickedImage.path);
-      // // copying the image into the device storage .. now the image will be a file on the
-      // // internal device storage.
-      // final savedImage = await _image.copy('${appDir.path}/$fileName');
-      // // forward the image to the main screen to use it.
-      // return savedImage;
+
+      // saving the image to the device storage.
+      // get the app directory in the physical device storage
+      final appDir = await sysPath.getApplicationDocumentsDirectory();
+      // this will give me the image name and extension
+      final fileName = path.basename(pickedImage.path);
+      // copying the image into the device storage .. now the image will be a file on the
+      // internal device storage.
+      final savedImage = await _image.copy('${appDir.path}/$fileName');
+      // crop the image
+      final cropImg = await _mCropImg(savedImage);
+      // forward the image to the main screen to use it.
+      return cropImg;
     } catch (e) {
       print('Error @ picking image,$e');
       return null;
     }
+  }
+
+  Future<File> _mCropImg(savedImage) async {
+    File _croppedImg = await ImageCropper.cropImage(
+        sourcePath: savedImage.path,
+        androidUiSettings: AndroidUiSettings(
+            toolbarColor: Colors.purple,
+            toolbarWidgetColor: Colors.white,
+            toolbarTitle: 'Crop It'));
+
+    return _croppedImg ?? savedImage;
   }
 
   // ======================================================================

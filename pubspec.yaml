@@ -42,7 +42,7 @@ dependencies:
   # to allow the usage of dataBases
   http: ^0.12.1
   # to allow the usage of 'Scalable Vector Graphics' image format
-  flutter_svg: ^0.17.4
+  flutter_svg: ^0.18.0
   # to iteract with 'file' images
   image_picker: ^0.6.7+1
   # to get into the directory of the device
@@ -57,7 +57,7 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   # to use flare animations
   flare_flutter: ^2.0.3
-  # pretty self explanatory
+  # pretty self explanatory .. ok mr smarty pants xD.
   image_cropper: ^1.2.3
   # to use firebase upload & progress bar
   firebase_core: ^0.4.5

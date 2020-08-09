@@ -1,9 +1,9 @@
-import '../helpers/globals.dart';
-import '../widgets/home_speed_dial.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/svg.dart';
-import '../screens/update_image_screen.dart';
+
+import '../helpers/globals.dart';
+import '../widgets/home_speed_dial.dart';
 import '../providers/pictures_provider.dart';
 import '../widgets/custom_app_drawer.dart';
 import '../widgets/home_grid.dart';
@@ -59,6 +59,42 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       // key to be used in custom delete icon.
       key: myGlobals.homeScaffoldKey,
+      // 'PreferredSize' to change the size of the appbar
+      appBar: PreferredSize(
+        // set the size to 120 px in height approximately.
+        preferredSize: Size.fromHeight(deviceSize.height * 0.17),
+        child: AppBar(
+          // to remove the build in 'show drawer' iconbutton
+          automaticallyImplyLeading: false,
+          // to get the flat look
+          backgroundColor: Colors.white,
+          elevation: 0,
+          // builder to enabel drawer opening with a press on the icon butotn.
+          // 'flexiblespace' to change the positiong of the items in it freely.
+          flexibleSpace: Builder(
+            builder: (context) => Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+              child: Row(
+                // crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () => Scaffold.of(context).openDrawer(),
+                    child: SvgPicture.asset(
+                      'assets/icons/menu.svg',
+                    ),
+                  ),
+                  CircleAvatar(
+                    backgroundImage: authProvider.userName == 'there'
+                        ? AssetImage(authProvider.userPicURI)
+                        : NetworkImage(authProvider.userPicURI),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
       backgroundColor: Colors.white,
       drawer: CustomAppDrawer(),
       body: SafeArea(
@@ -66,32 +102,13 @@ class HomeScreen extends StatelessWidget {
           onRefresh: () => _mReFetchData(context),
           child: Padding(
             padding: const EdgeInsets.only(
-              top: 16,
+              top: 0,
               left: 20,
               right: 20,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    InkWell(
-                      // onTap: () => homeScaffoldKey.currentState.openDrawer(),
-                      child: SvgPicture.asset(
-                        'assets/icons/menu.svg',
-                      ),
-                    ),
-                    CircleAvatar(
-                      backgroundImage: authProvider.userName == 'there'
-                          ? AssetImage(authProvider.userPicURI)
-                          : NetworkImage(authProvider.userPicURI),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: deviceSize.height * 0.04,
-                ),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: RichText(
@@ -163,9 +180,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      // // bottomNavigationBar: BottomNavigationBar(
-      // //   items: ,
-      // ),
+
       floatingActionButton: HomeSpeedDial(),
     );
   }

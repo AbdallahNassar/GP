@@ -16,7 +16,7 @@ class OptionsScreen extends StatelessWidget {
       body: Center(
         child: Text(
           'h',
-          style: Theme.of(context).textTheme.title,
+          style: Theme.of(context).textTheme.headline3,
         ),
       ),
     );

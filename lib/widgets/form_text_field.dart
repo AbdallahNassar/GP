@@ -23,8 +23,8 @@ class FormTextField extends StatelessWidget {
     // get the device dimensions
     final deviceSize = MediaQuery.of(context).size;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 7.0),
-      padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 20.0),
+      margin: const EdgeInsets.symmetric(vertical: 5.0),
+      padding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 20.0),
       width: deviceSize.width * 0.8,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
@@ -49,11 +49,28 @@ class FormTextField extends StatelessWidget {
         // who will I receive from
         focusNode: hintText.contains('Email') ? null : userNameFocusNode,
         validator: (value) {
+          value = value.trim();
+          value = value.replaceAll(' ', '');
           if (value.isEmpty) {
-            return 'Invalid email!';
+            return hintText.contains('Email')
+                ? 'Email can\'t be empty.'
+                : 'Username can\'t be empty.';
+            // don't do there checks on 'username'
+          } else if (hintText.contains('Username'))
+            return null;
+          else if (RegExp(
+                      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+                  .hasMatch(value) ==
+              false) {
+            return 'Invalid Email Address';
+          } else if (value.substring(value.length - 3, value.length) != 'com' &&
+              value.substring(value.length - 3, value.length) != 'org' &&
+              value.substring(value.length - 3, value.length) != 'net') {
+            return 'Invalid Email Address';
           }
           // everything is good .. so return NULL .. that's how the validator works.
-          return null;
+          else
+            return null;
         },
         // save the data in the template I created at the beginning of this widget;
         onSaved: (value) {

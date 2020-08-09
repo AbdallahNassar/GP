@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/flare_button.dart';
 
 // flare widgets must be statful, duh!
 class TestScreen extends StatefulWidget {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../widgets/picture_speed_dial.dart';
 import '../providers/picture_provider.dart';
 import '../providers/pictures_provider.dart';
@@ -66,19 +67,8 @@ class PictureDetails extends StatelessWidget {
                       vertical: 10,
                     ),
                     title: Container(
-                      constraints: BoxConstraints(maxHeight: 60),
+                      height: 90,
                       alignment: Alignment.bottomLeft,
-                      decoration: BoxDecoration(
-                        // border: Border.all(
-                        //   color: Colors.black,
-                        // ),
-                        borderRadius: BorderRadius.circular(
-                          16,
-                        ),
-                        // color: Theme.of(context)
-                        //     .primaryColorLight
-                        //     .withOpacity(0.2),
-                      ),
                       padding: const EdgeInsets.only(
                         right: 9.0,
                         left: 9.0,
@@ -102,11 +92,13 @@ class PictureDetails extends StatelessWidget {
                               text: '\n${pictureData.location.address}',
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1
-                                  .copyWith(fontSize: 14),
+                                  .bodyText2
+                                  .copyWith(fontSize: 12),
                             ),
                           ],
                         ),
+                        maxLines: 2,
+                        softWrap: true,
                       ),
                     ),
                     // what to see if the 'appbar' is expanded

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/form_button.dart';
 import '../providers/authentication_provider.dart';
 import '../widgets/form_password_field.dart';
 import '../widgets/form_text_field.dart';
-import '../screens/top_tabs_screen.dart';
 import '../models/custom_http_exception.dart';
 
 class LoginScreenForm extends StatefulWidget {
@@ -46,7 +46,8 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
         context: context,
         builder: (ctx) => AlertDialog(
               title: Text('An Error Occurred!'),
-              content: Text(errorMessage),
+              content: Text(errorMessage ??
+                  'Could not authenticate you. Please try again later.'),
               actions: <Widget>[
                 FlatButton(
                   child: Text('Ok'),
@@ -74,7 +75,6 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
       await Provider.of<Authentication>(context, listen: false)
           .mLogin(_authData['email'], _authData['password']);
 
-      // Navigator.of(context).pushReplacementNamed(TopTabsScreen.routeName);
       // to check if I get a specific kind of error/exception rather than check for any error/exception.
       // I could also have a normal generic 'catch' after the 'on ... catch'.
     } on CustomHTTPException catch (error) {
@@ -90,8 +90,10 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
       } else if (error.toString().contains('INVALID_PASSWORD')) {
         errorMessage = 'Invalid password.';
       }
-      print('Error  Message @ auth card: $errorMessage');
       _showErroDialog(errorMessage: errorMessage);
+    } on PlatformException catch (error) {
+      print('should be here');
+      _showErroDialog(errorMessage: error.message);
     } catch (error) {
       const String errorMessage =
           'Could not authenticate you. Please try again later.';

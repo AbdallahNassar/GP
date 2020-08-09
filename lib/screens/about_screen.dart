@@ -16,7 +16,7 @@ class AboutScreen extends StatelessWidget {
             child: Center(
           child: Text(
             'About Us.',
-            style: Theme.of(context).textTheme.title,
+            style: Theme.of(context).textTheme.headline3,
           ),
         )));
   }
