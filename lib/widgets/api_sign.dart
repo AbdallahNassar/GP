@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import '../providers/authentication_provider.dart';
 
@@ -26,22 +25,22 @@ class APISign extends StatelessWidget {
     );
   }
 
-  // show a dialog if there's an error in the authentication process.
-  void _showErroDialog(context, {String errorMessage = 'ERROR'}) {
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text('An Error Occurred!'),
-              content: Text(errorMessage ??
-                  'Could not authenticate you. Please try again later.'),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('Ok'),
-                  onPressed: () => Navigator.of(ctx).pop(),
-                )
-              ],
-            ));
-  }
+  // // show a dialog if there's an error in the authentication process.
+  // void _showErroDialog(context, {String errorMessage = 'ERROR'}) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (ctx) => AlertDialog(
+  //             title: Text('An Error Occurred!'),
+  //             content: Text(errorMessage ??
+  //                 'Could not authenticate you. Please try again later.'),
+  //             actions: <Widget>[
+  //               FlatButton(
+  //                 child: Text('Ok'),
+  //                 onPressed: () => Navigator.of(ctx).pop(),
+  //               )
+  //             ],
+  //           ));
+  // }
   // ======================================================================
 
   @override

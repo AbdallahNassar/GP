@@ -8,7 +8,7 @@ import '../providers/pictures_provider.dart';
 class PictureDetails extends StatelessWidget {
   // ========================== class parameters ==========================
   static const routeName = '/picture-details-screen';
-
+  static const emptyLoc = '';
   @override
   Widget build(BuildContext context) {
     // 'modalRoute' to extract the Arguments passed via the routes
@@ -89,7 +89,8 @@ class PictureDetails extends StatelessWidget {
                                   ),
                             ),
                             TextSpan(
-                              text: '\n${pictureData.location.address}',
+                              text:
+                                  '\n${pictureData.location.address == null ? emptyLoc : pictureData.location.address}',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText2

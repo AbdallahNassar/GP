@@ -92,7 +92,6 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
       }
       _showErroDialog(errorMessage: errorMessage);
     } on PlatformException catch (error) {
-      print('should be here');
       _showErroDialog(errorMessage: error.message);
     } catch (error) {
       const String errorMessage =
@@ -131,6 +130,10 @@ class _LoginScreenFormState extends State<LoginScreenForm> {
             isLoading: _isLoading,
             submitMethod: _submit,
           ),
+          if (_isLoading == true)
+            SizedBox(
+              height: 15,
+            )
         ],
       ),
     );

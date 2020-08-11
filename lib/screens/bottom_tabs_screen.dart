@@ -2,7 +2,6 @@ import './update_image_screen.dart';
 
 import '../widgets/custom_app_drawer.dart';
 import './home_screen.dart';
-import './favourites_screen.dart';
 import 'package:flutter/material.dart';
 
 class BottomTapsScreen extends StatefulWidget {
@@ -24,7 +23,6 @@ class _BottomTapsScreenState extends State<BottomTapsScreen> {
   void initState() {
     _screensList = [
       {'screen': HomeScreen(), 'title': 'ScaniT'},
-      {'screen': FavouritesScreen(), 'title': 'Your Favoutire Items'}
     ];
     super.initState();
   }

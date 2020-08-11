@@ -82,6 +82,7 @@ class Authentication with ChangeNotifier {
           await _mAddUserName(userName: userName);
           break;
         case 'signInWithPassword':
+          print('calling native sign in');
           await _mNativeSingIn(
               identifier: identifier, email: email, password: password);
           // await _mFetchUserName();
@@ -199,8 +200,7 @@ class Authentication with ChangeNotifier {
   Future<void> _mGoogleSignIn({identifier}) async {
     try {
       // this opens the 'google sign in' page handles the Gmail and password
-      final GoogleSignInAccount googleAccount =
-          await _googleSignIn.signIn().timeout(Duration(seconds: 10));
+      final GoogleSignInAccount googleAccount = await _googleSignIn.signIn();
       // check to see if everything went okay
       if (googleAccount != null) {
         // also handles the 'google sign in' popup view
@@ -245,8 +245,7 @@ class Authentication with ChangeNotifier {
   Future<void> _mAnonSignIn({identifier}) async {
     try {
       // this opens the 'google sign in' page handles the Gmail and password
-      final authResult =
-          await _mAuth.signInAnonymously().timeout(Duration(seconds: 10));
+      final authResult = await _mAuth.signInAnonymously();
       print(authResult.user.uid);
       if (authResult.user.isAnonymous) {
         final userToken = await authResult.user.getIdToken();
@@ -348,6 +347,7 @@ class Authentication with ChangeNotifier {
 
   Future<void> mLogin(String email, String password) async {
     try {
+      print('calling login');
       await mAuthenticate(
           email: email, password: password, identifier: 'signInWithPassword');
     } catch (e) {
