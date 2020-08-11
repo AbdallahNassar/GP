@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import '../widgets/custom_app_drawer.dart';
 import '../screens/update_image_screen.dart';
-import '../screens/favourites_screen.dart';
 
 class TopTabsScreen extends StatelessWidget {
   static const routeName = '/top-tabs';
@@ -76,7 +75,6 @@ class TopTabsScreen extends StatelessWidget {
             // this first element will be shown AUTOMATICALLY if you press the first 'tab' in the 'tabbar' above
             // HomePageScreen(),
             // the second element will be shown AUTOMATICALLY if you press the second 'tab' in the 'tabbar' above .. and so on
-            FavouritesScreen(),
           ],
         ),
         floatingActionButton: FloatingActionButton(

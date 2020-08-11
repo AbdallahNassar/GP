@@ -180,6 +180,9 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
 
   String _mValidateInput({String title}) {
     // 'title' Validation
+    if (title == '') {
+      return 'Title can\'t be empty.';
+    }
     if (title != null) {
       if (title.isNotEmpty &&
           !title.contains(new RegExp(r'[*+,./\^`|~:;<=>?@]')) &&
@@ -229,7 +232,51 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
           title: _pictureTemplate.id == null
               ? Text('Add Picture')
               : Text('Edit Picture'),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+            ),
+            onPressed: () => // show the confirmation Dialogue.
+                showDialog(
+                    context: context,
+                    // the shown dialog will be an 'alert Dialog'
+                    builder: (builderContext) => AlertDialog(
+                          // title of the 'alerDialog'
+                          title: Text(
+                            'Discard Changes?',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          // body of the 'alertDialog'
+                          content: Text(
+                            'Do you want to discard any changes you have made?',
+                            textAlign: TextAlign.center,
+                          ),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text('No'),
+                              // Returns a [Future] that resolves to the value (if any) that was passed
+                              // to [Navigator.pop] when the dialog was closed.
+                              onPressed: () =>
+                                  Navigator.of(builderContext).pop(false),
+                            ),
+                            FlatButton(
+                              child: Text('Yes'),
+                              // Returns a [Future] that resolves to the value (if any) that was passed
+                              // to [Navigator.pop] when the dialog was closed.
+                              onPressed: () =>
+                                  Navigator.of(builderContext).pop(true),
+                            )
+                          ],
+                          // the 'then' fuction will be executed AFTER I choose from the 'shown Dialogue'
+                          // hence the name .. Future.
+                        )).then((answer) {
+              // If the user confirms the deletion.
+              if (answer != null && answer == true) Navigator.of(context).pop();
+            }),
+          ),
         ),
+
         // 'form' is a built-in 'widget' that works behind the scenes collects the user inputs
         // and performs some validation and has a decent 'UI' to give hints to the user
         // and comment on what he has already entered.
@@ -280,7 +327,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                         title: newValue,
                       ),
                     ),
-
+                    // text field for the extracted text
                     TextFormField(
                       style: Theme.of(context).textTheme.headline6,
                       initialValue: _pictureTemplate == null

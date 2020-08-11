@@ -76,13 +76,15 @@ class HomeSpeedDial extends StatelessWidget {
             final chosenPicture =
                 await _mGetImage(picSource: ImageSource.camera);
             // call the 'updatescreen' with the photo provided by user.
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => UpdatePictureScreen(
-                  chosenPic: chosenPicture,
+            if (chosenPicture != null) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => UpdatePictureScreen(
+                    chosenPic: chosenPicture,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           },
           child: Icon(
             Icons.add_a_photo,
@@ -101,13 +103,15 @@ class HomeSpeedDial extends StatelessWidget {
             final chosenPicture =
                 await _mGetImage(picSource: ImageSource.gallery);
             // call the 'updatescreen' with the photo provided by user.
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => UpdatePictureScreen(
-                  chosenPic: chosenPicture,
+            if (chosenPicture != null) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => UpdatePictureScreen(
+                    chosenPic: chosenPicture,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           },
           elevation: 2,
           child: Icon(

@@ -9,8 +9,6 @@ import './screens/welcome_screen.dart';
 import './screens/about_screen.dart';
 import './screens/update_image_screen.dart';
 import './screens/picture_details_screen.dart';
-import './screens/favourites_screen.dart';
-import './screens/top_tabs_screen.dart';
 import './screens/options_screen.dart';
 import './screens/splash_screen.dart';
 import './screens/login_screen.dart';
@@ -151,7 +149,6 @@ class MyApp extends StatelessWidget {
             // TopTabsScreen.routeName: (context) => TopTabsScreen(),
             HomeScreen.routeName: (context) => HomeScreen(),
             OptionsScreen.routeName: (context) => OptionsScreen(),
-            FavouritesScreen.routeName: (context) => FavouritesScreen(),
             PictureDetails.routeName: (context) => PictureDetails(),
             UpdatePictureScreen.routeName: (context) => UpdatePictureScreen(),
             AboutScreen.routeName: (context) => AboutScreen(),
@@ -163,13 +160,13 @@ class MyApp extends StatelessWidget {
           // 'onGenerateRoute' is the default 'route' to take for any 'route' or 'screen' that is
           // not defined in the routing table above
           onGenerateRoute: (settings) {
-            return MaterialPageRoute(builder: (_) => TopTabsScreen());
+            return MaterialPageRoute(builder: (_) => LoginScreen());
           },
 
           // 'Unknwon Route' is reached when flutter fails to build a screen with all the above methods
           // e.g. using the table route or using 'onGenerateRoute' .. your '404' page.
           onUnknownRoute: (settings) {
-            return MaterialPageRoute(builder: (_) => TopTabsScreen());
+            return MaterialPageRoute(builder: (_) => LoginScreen());
           },
         ),
       ),
