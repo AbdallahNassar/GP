@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
-import '../widgets/image_input.dart';
+import '../widgets/choice_box.dart';
 import '../widgets/location_input.dart';
 import '../models/place_location.dart';
 import '../widgets/cancel_raised_button.dart';
@@ -14,8 +17,11 @@ class UpdatePictureScreen extends StatefulWidget {
   // ========================== class parameters ==========================
   static const routeName = '/update-picture';
   final File chosenPic;
+  // for some reason it keeps resending it
+  var apiExtText;
+  var inApi = false;
   // ========================== class consturctor ==========================
-  const UpdatePictureScreen({this.chosenPic});
+  UpdatePictureScreen({this.chosenPic});
   // ======================================================================
   @override
   _UpdatePictureScreenState createState() => _UpdatePictureScreenState();
@@ -33,6 +39,8 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
   bool _isLoading = false;
   // to populate the data from the 'form' with this.
   var _pictureTemplate;
+  var _arModel = true;
+  var _enModel = false;
 
   // MUST be disposed of after the form terminates .. I added it to Listen to it and when
   // it is changed I reBUild the 'widget' to update the 'image preview'
@@ -64,9 +72,13 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
             extractedText: '',
             imageURI:
                 widget.chosenPic != null ? widget.chosenPic.absolute.path : '',
-            title: '',
+            title: 'image1',
             isFavourite: false);
       _isInitState = false;
+      // call the API with the image with a different thread to start the processing to save time
+      // Isolate.spawn((message) {
+      //   flaskAPI;
+      // }, null);
     }
     super.didChangeDependencies();
   }
@@ -80,14 +92,46 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
     super.dispose();
   }
 
-// ======================================================================
-  // save the selected image into class variable
-  void _selectImage(File pickedImage) {
-    // create a new picture with a diff image uri.
-    _pictureTemplate = _mOverWritepicture(
-      imageUrl: pickedImage,
-    );
+  // ========================== class methods ==========================
+  Future<void> flaskAPI(bool identifier) async {
+    if (widget.apiExtText != null || widget.inApi == true) return '';
+    try {
+      widget.inApi = true;
+      var identifier = (_arModel) ? '/api/ar' : 'api/en';
+      print(
+          ' @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ inside flask API $identifier');
+      final url = 'http://23.99.224.142:5000$identifier';
+
+      var bytesImg = await widget.chosenPic.readAsBytes();
+
+      var response = await http.post(
+        url,
+        body: bytesImg,
+        headers: {"Accept": "application/json"},
+      ).timeout(
+        Duration(seconds: 30),
+      );
+
+      var jsonResponse = json.decode(response.body)['result'];
+      // widget.apiExtText = jsonResponse.join(' ');
+      print(' @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ finished flask API');
+      setState(() {
+        widget.apiExtText = jsonResponse.join(' ');
+      });
+    } catch (e) {
+      print('error in flask apppi');
+    }
+    // /api/en
   }
+
+// ======================================================================
+  // // save the selected image into class variable
+  // void _selectImage(File pickedImage) {
+  //   // create a new picture with a diff image uri.
+  //   _pictureTemplate = _mOverWritepicture(
+  //     imageUrl: pickedImage,
+  //   );
+  // }
 
 // ======================================================================
   void _selectPlace(double lat, double lng) {
@@ -111,6 +155,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
       setState(() {
         _isLoading = true;
       });
+
       _formHandler.currentState.save();
       // if the id is null .. then I came to this screen to create a new picture and so
       // I call the 'addpicture' method.
@@ -118,6 +163,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
         try {
           // ' await ' is to handle this code as if it were 'Synchronous' .. and wait
           // for a response to then move onto the next lines.
+          // _pictureTemplate = _mOverWritepicture(extractedText: widget.apiExtText);
           await Provider.of<Pictures>(context, listen: false)
               .mAddPicture(picture: _pictureTemplate);
           Navigator.of(context).pop();
@@ -206,7 +252,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
   Picture _mOverWritepicture(
       {id, extractedText, imageUrl, title, isFavourite, location}) {
     // I don't update the exisiting picture cuz it's values are all final, so create a new one.
-
+    if (extractedText != null) print('FLAAAAASK OVERWIIIIIIIIIITE');
     return Picture(
       id: id != null ? id : _pictureTemplate.id,
       extractedText: extractedText != null
@@ -302,6 +348,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                       //  then I pressed on the 'New' Icon and all the form fields should be empty ..
                       // if it's NOT NULL then I pressed on the 'Edit' Button And I should fetch the existing
                       // picture's values.
+                      enabled: (widget.apiExtText != null) ? true : false,
                       initialValue: _pictureTemplate == null
                           ? null
                           : _pictureTemplate.title,
@@ -328,36 +375,123 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                       ),
                     ),
                     // text field for the extracted text
-                    TextFormField(
-                      style: Theme.of(context).textTheme.headline6,
-                      initialValue: _pictureTemplate == null
-                          ? 'READ ONLY'
-                          : _pictureTemplate.extractedText,
-                      keyboardType: TextInputType.multiline,
-                      // max number of 'viewable' lines of text .. the user can scroll to view more.
-                      maxLines: 2,
-                      decoration: InputDecoration(
-                        // the 'Hint' shown above the text filed input
-                        labelText: 'extractedText',
-                      ),
-                      // to mark this 'textfield' as a 'focus node'
-                      focusNode: _extractedTextFieldFocusNode,
-                      onSaved: (newValue) =>
-                          _pictureTemplate = _mOverWritepicture(
-                        extractedText: newValue,
-                      ),
-                      // enable editing after the text has been successfully extracted.
-                      enabled: _pictureTemplate.id == null ? false : true,
-                    ),
+                    // if (widget.alreadySentAPIRequest == true && widget.apiExtText
+                    (widget.apiExtText == null)
+                        ? FutureBuilder(
+                            future: flaskAPI(_arModel),
+                            builder: (_, dataSnapShot) {
+                              if (dataSnapShot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Container(
+                                  margin: const EdgeInsets.only(
+                                    top: 20,
+                                  ),
+                                  height: 70,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 1, color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  padding: const EdgeInsets.only(
+                                    left: 40,
+                                    right: 80,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Extracting',
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColor)),
+                                      CircularProgressIndicator(
+                                        backgroundColor:
+                                            Theme.of(context).primaryColor,
+                                      ),
+                                      Text('Text',
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .accentColor)),
+                                    ],
+                                  ),
+                                );
+                              } else {
+                                // setState(() {
+
+                                // });
+                                return TextFormField(
+                                  style: Theme.of(context).textTheme.headline6,
+                                  initialValue: widget.apiExtText,
+                                  //     ? 'READ ONLY'
+                                  //     : _pictureTemplate.extractedText,
+                                  keyboardType: TextInputType.multiline,
+                                  // max number of 'viewable' lines of text .. the user can scroll to view more.
+                                  maxLines: 2,
+                                  decoration: InputDecoration(
+                                    // the 'Hint' shown above the text filed input
+                                    labelText: 'extractedText',
+                                  ),
+                                  // to mark this 'textfield' as a 'focus node'
+                                  focusNode: _extractedTextFieldFocusNode,
+                                  onSaved: (newValue) =>
+                                      _pictureTemplate = _mOverWritepicture(
+                                    extractedText: newValue,
+                                  ),
+                                );
+                              }
+                            })
+                        : TextFormField(
+                            style: Theme.of(context).textTheme.headline6,
+                            initialValue: widget.apiExtText,
+                            //     ? 'READ ONLY'
+                            //     : _pictureTemplate.extractedText,
+                            keyboardType: TextInputType.multiline,
+                            // max number of 'viewable' lines of text .. the user can scroll to view more.
+                            maxLines: 2,
+                            decoration: InputDecoration(
+                              // the 'Hint' shown above the text filed input
+                              labelText: 'extractedText',
+                            ),
+                            // to mark this 'textfield' as a 'focus node'
+                            focusNode: _extractedTextFieldFocusNode,
+                            onSaved: (newValue) =>
+                                _pictureTemplate = _mOverWritepicture(
+                              extractedText: newValue,
+                            ),
+                          ),
                     SizedBox(
                       height: deviceSize.height * 0.04,
                     ),
-                    ImageInput(
-                      onSelectImage: _selectImage,
-                      // show the choosen image if it existed.
-                      initialImage:
-                          widget.chosenPic ?? File(_pictureTemplate.imageURI),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.grey,
+                            ),
+                            image: (widget.chosenPic == null)
+                                ? null
+                                : DecorationImage(
+                                    image: FileImage(
+                                      widget.chosenPic,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        ChoiceBox(_arModel, _enModel),
+                      ],
                     ),
+
                     SizedBox(
                       height: deviceSize.height * 0.04,
                     ),
@@ -372,7 +506,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                         backgroundColor: Theme.of(context).primaryColor,
                       ),
                     SizedBox(
-                      height: deviceSize.height * 0.01,
+                      height: deviceSize.height * 0.025,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -386,12 +520,13 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                           color: Theme.of(context).primaryColor.withAlpha(170),
                           child: Text('Submit',
                               style: TextStyle(fontWeight: FontWeight.bold)),
-                          onPressed: _mSubmitForm,
+                          onPressed:
+                              widget.apiExtText == null ? null : _mSubmitForm,
                         ),
                         SizedBox(
-                          width: 50,
+                          width: 55,
                         ),
-                        CancelRaisedButton()
+                        CancelRaisedButton(),
                       ],
                     )
                   ],

@@ -49,11 +49,11 @@ class HomeScreen extends StatelessWidget {
   // ======================================================================
   // '_' at the beginning of the name to indicate that this is a private method
   // and should not be called from outside of this class.
-  void _handleLogout(context) {
-    Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
-    final authProvider = Provider.of<Authentication>(context, listen: false);
-    authProvider.mLogOut();
-  }
+  // void _handleLogout(context) {
+  //   Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
+  //   final authProvider = Provider.of<Authentication>(context, listen: false);
+  //   authProvider.mLogOut();
+  // }
   // ======================================================================
 
   @override
@@ -88,7 +88,7 @@ class HomeScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
               child: Row(
                 // crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   InkWell(
                     onTap: () => Scaffold.of(context).openDrawer(),
@@ -96,71 +96,72 @@ class HomeScreen extends StatelessWidget {
                       'assets/icons/menu.svg',
                     ),
                   ),
-                  Spacer(),
-                  // to rotate the logout icon
-                  RotationTransition(
-                    turns: AlwaysStoppedAnimation(15 / 360),
-                    child: IconButton(
-                      // onPressed: () => _handleLogout(context),
-                      onPressed: () => // show the confirmation Dialogue.
-                          showDialog(
-                              context: context,
-                              // the shown dialog will be an 'alert Dialog'
-                              builder: (builderContext) => AlertDialog(
-                                    // title of the 'alerDialog'
-                                    title: Text(
-                                      'Are you sure?',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    // body of the 'alertDialog'
-                                    content: Text(
-                                      'Do you want to logout?',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                        child: Text('No'),
-                                        // Returns a [Future] that resolves to the value (if any) that was passed
-                                        // to [Navigator.pop] when the dialog was closed.
-                                        onPressed: () =>
-                                            Navigator.of(builderContext)
-                                                .pop(false),
-                                      ),
-                                      FlatButton(
-                                        child: Text('Yes'),
-                                        // Returns a [Future] that resolves to the value (if any) that was passed
-                                        // to [Navigator.pop] when the dialog was closed.
-                                        onPressed: () =>
-                                            Navigator.of(builderContext)
-                                                .pop(true),
-                                      )
-                                    ],
-                                    // the 'then' fuction will be executed AFTER I choose from the 'shown Dialogue'
-                                    // hence the name .. Future.
-                                  )).then(
-                        (answer) {
-                          // If the user confirms the logout.
-                          if (answer != null && answer == true)
-                            _handleLogout(context);
-                        },
-                      ),
-                      icon: SvgPicture.asset(
-                        'assets/icons/logout5.svg',
-                        color: Color(0xFFA0A5BD),
-                      ),
-                    ),
-                  ),
+                  // Spacer(),
+                  // // to rotate the logout icon
+                  // RotationTransition(
+                  //   turns: AlwaysStoppedAnimation(15 / 360),
+                  //   child: IconButton(
+                  //     // onPressed: () => _handleLogout(context),
+                  //     onPressed: () => // show the confirmation Dialogue.
+                  //         showDialog(
+                  //             context: context,
+                  //             // the shown dialog will be an 'alert Dialog'
+                  //             builder: (builderContext) => AlertDialog(
+                  //                   // title of the 'alerDialog'
+                  //                   title: Text(
+                  //                     'Are you sure?',
+                  //                     textAlign: TextAlign.center,
+                  //                     style: TextStyle(
+                  //                         fontWeight: FontWeight.bold),
+                  //                   ),
+                  //                   // body of the 'alertDialog'
+                  //                   content: Text(
+                  //                     'Do you want to logout?',
+                  //                     textAlign: TextAlign.center,
+                  //                   ),
+                  //                   actions: <Widget>[
+                  //                     FlatButton(
+                  //                       child: Text('No'),
+                  //                       // Returns a [Future] that resolves to the value (if any) that was passed
+                  //                       // to [Navigator.pop] when the dialog was closed.
+                  //                       onPressed: () =>
+                  //                           Navigator.of(builderContext)
+                  //                               .pop(false),
+                  //                     ),
+                  //                     FlatButton(
+                  //                       child: Text('Yes'),
+                  //                       // Returns a [Future] that resolves to the value (if any) that was passed
+                  //                       // to [Navigator.pop] when the dialog was closed.
+                  //                       onPressed: () =>
+                  //                           Navigator.of(builderContext)
+                  //                               .pop(true),
+                  //                     )
+                  //                   ],
+                  //                   // the 'then' fuction will be executed AFTER I choose from the 'shown Dialogue'
+                  //                   // hence the name .. Future.
+                  //                 )).then(
+                  //       (answer) {
+                  //         // If the user confirms the logout.
+                  //         if (answer != null && answer == true)
+                  //           _handleLogout(context);
+                  //       },
+                  //     ),
+                  //     icon: SvgPicture.asset(
+                  //       'assets/icons/logout5.svg',
+                  //       color: Color(0xFFA0A5BD),
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(
                     width: 8.0,
                   ),
                   CircleAvatar(
-                    backgroundImage: authProvider.userName == 'there'
+                    backgroundImage: authProvider.userPicURI ==
+                            'assets/images/avatar.png'
                         ? AssetImage(authProvider.userPicURI)
                         // to handle some error with user pic
                         : NetworkImage(authProvider.userPicURI ??
-                            'https://www.google.com/imgres?imgurl=https%3A%2F%2Fimg.favpng.com%2F7%2F0%2F8%2Fscalable-vector-graphics-avatar-learning-icon-png-favpng-FYEDPnnsy3wDHTyMzJa3qhE7f_t.jpg&imgrefurl=https%3A%2F%2Ffavpng.com%2Fpng_search%2Fuser-avatar&tbnid=zJIfwvV63CX7DM&vet=12ahUKEwj__LGglpLrAhX1wQIHHT49A9wQMygAegUIARDMAQ..i&docid=tYmtVCeRsniMNM&w=290&h=241&q=user%20avatar%20png&ved=2ahUKEwj__LGglpLrAhX1wQIHHT49A9wQMygAegUIARDMAQ'),
+                            'https://img.favpng.com/7/0/8/scalable-vector-graphics-avatar-learning-icon-png-favpng-FYEDPnnsy3wDHTyMzJa3qhE7f.jpg'),
                   ),
                 ],
               ),

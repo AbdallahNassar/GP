@@ -105,6 +105,7 @@ class _LocationInputState extends State<LocationInput> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             border: Border.all(width: 1, color: Colors.grey),
+            borderRadius: BorderRadius.circular(15),
           ),
           child: (_isLoading == true)
               ? CircularProgressIndicator()

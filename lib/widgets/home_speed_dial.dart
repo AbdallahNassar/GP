@@ -24,7 +24,8 @@ class HomeSpeedDial extends StatelessWidget {
       if (pickedImage == null) return null;
       // everything is ok
       final File _image = File(pickedImage.path);
-
+      // crop the image
+      final cropImg = await _mCropImg(_image);
       // saving the image to the device storage.
       // get the app directory in the physical device storage
       final appDir = await sysPath.getApplicationDocumentsDirectory();
@@ -32,11 +33,11 @@ class HomeSpeedDial extends StatelessWidget {
       final fileName = path.basename(pickedImage.path);
       // copying the image into the device storage .. now the image will be a file on the
       // internal device storage.
-      final savedImage = await _image.copy('${appDir.path}/$fileName');
-      // crop the image
-      final cropImg = await _mCropImg(savedImage);
+      final savedImage = await cropImg.copy('${appDir.path}/$fileName');
+
+      // final cropImg = savedImage;
       // forward the image to the main screen to use it.
-      return cropImg;
+      return savedImage;
     } catch (e) {
       print('Error @ picking image,$e');
       return null;

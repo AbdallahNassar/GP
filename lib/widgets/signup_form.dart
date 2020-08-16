@@ -75,6 +75,7 @@ class _SignUpFormState extends State<SignUpForm> {
       await Provider.of<Authentication>(context, listen: false).mSignUp(
           _authData['email'], _authData['password'], _authData['userName']);
 
+      Navigator.of(context).pushNamed('/');
       // to check if I get a specific kind of error/exception rather than check for any error/exception.
       // I could also have a normal generic 'catch' after the 'on ... catch'.
     } on CustomHTTPException catch (error) {
@@ -91,18 +92,23 @@ class _SignUpFormState extends State<SignUpForm> {
         errorMessage = 'Invalid password.';
       }
       _showErroDialog(errorMessage: errorMessage);
+      setState(() {
+        _isLoading = false;
+      });
     } on PlatformException catch (error) {
       print('should be here');
       _showErroDialog(errorMessage: error.message);
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
       const String errorMessage =
           'Could not authenticate you. Please try again later.';
       _showErroDialog(errorMessage: errorMessage);
+      setState(() {
+        _isLoading = false;
+      });
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override

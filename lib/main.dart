@@ -11,6 +11,7 @@ import './screens/update_image_screen.dart';
 import './screens/picture_details_screen.dart';
 import './screens/options_screen.dart';
 import './screens/splash_screen.dart';
+import './screens/test_screen.dart';
 import './screens/login_screen.dart';
 
 void main() => runApp(MyApp());
@@ -51,8 +52,10 @@ class MyApp extends StatelessWidget {
         // the 'child' part is to indicate that there's a 'static' part that I wish to NOT re-build.
         builder: (_, authProvider, child) => MaterialApp(
           // hide the 'debug' banner at the top of the screen
+
           debugShowCheckedModeBanner: false,
           title: 'Home Page',
+
           theme: ThemeData(
             errorColor: Colors.red,
             primaryColor: Color(0xFF6F35A5),
@@ -155,6 +158,7 @@ class MyApp extends StatelessWidget {
             LoginScreen.routeName: (context) => LoginScreen(),
             WelcomeScreen.routeName: (context) => WelcomeScreen(),
             SignUpScreen.routeName: (context) => SignUpScreen(),
+            TestScreen.routeName: (context) => TestScreen(),
           },
 
           // 'onGenerateRoute' is the default 'route' to take for any 'route' or 'screen' that is

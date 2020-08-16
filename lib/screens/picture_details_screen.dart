@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'dart:io';
 import '../widgets/picture_speed_dial.dart';
 import '../providers/picture_provider.dart';
 import '../providers/pictures_provider.dart';
@@ -19,7 +19,8 @@ class PictureDetails extends StatelessWidget {
     // now I search the 'list' in the 'provider' for the element with the ID sent to my via the route
     // to dynamically retrieve All the picture details instead of passing it around.
     final Picture pictureData = picturesProvider.mFindByID(routeArgument);
-    print('picture DATA = $pictureData');
+
+    print('picture TEXTs = ${pictureData.extractedText}');
     // to avoid deletions[w/o restoration] error.
     if (pictureData == null)
       return Scaffold(
@@ -106,8 +107,9 @@ class PictureDetails extends StatelessWidget {
                     background: Hero(
                       // 'tag' to identify the 'widget' that I wish to animate .. should be unique
                       tag: pictureData.id,
-                      child: Image.asset(
-                        pictureData.imageURI,
+                      child: Image.file(
+                        // file to show it .. I use file because of 'imgacropper'
+                        File(pictureData.imageURI),
                         fit: BoxFit.cover,
                       ),
                     ),

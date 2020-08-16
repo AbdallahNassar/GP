@@ -1,3 +1,4 @@
+import 'package:ScaniT/screens/test_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,7 @@ class CustomAppDrawer extends StatelessWidget {
     AppDrawerItemModel(
         title: 'Options',
         icon: Icon(Icons.settings),
-        calledRouteName: OptionsScreen.routeName),
+        calledRouteName: TestScreen.routeName),
     AppDrawerItemModel(
         title: 'About',
         icon: Icon(Icons.supervised_user_circle),
@@ -60,9 +61,10 @@ class CustomAppDrawer extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundImage: authProvider.userName == 'there'
-                ? AssetImage(authProvider.userPicURI)
-                : NetworkImage(authProvider.userPicURI),
+            backgroundImage:
+                authProvider.userPicURI == 'assets/images/avatar.png'
+                    ? AssetImage(authProvider.userPicURI)
+                    : NetworkImage(authProvider.userPicURI),
           ),
         ),
         // to remove the 'drawer' from the 'drawer' :'''''D

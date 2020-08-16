@@ -54,6 +54,7 @@ class APISign extends StatelessWidget {
             try {
               await Provider.of<Authentication>(context, listen: false)
                   .mAPILogin(identifier: 'singInWithGoogle');
+              Navigator.of(context).pushNamed('/');
             } catch (error) {
               _showSnackBar(context, errorMessage: error.message);
             }
@@ -80,6 +81,7 @@ class APISign extends StatelessWidget {
             try {
               await Provider.of<Authentication>(context, listen: false)
                   .mAPILogin(identifier: 'singInWithFacebook');
+              Navigator.of(context).pushNamed('/');
             } catch (e) {
               print(e.message);
               _showSnackBar(context, errorMessage: e.message);
@@ -104,6 +106,7 @@ class APISign extends StatelessWidget {
             try {
               await Provider.of<Authentication>(context, listen: false)
                   .mAPILogin(identifier: 'Anon');
+              Navigator.of(context).pushNamed('/');
             } catch (e) {
               _showSnackBar(context, errorMessage: e.message);
             }
