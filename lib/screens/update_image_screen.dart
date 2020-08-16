@@ -29,6 +29,7 @@ class UpdatePictureScreen extends StatefulWidget {
 
 class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
   // ========================== class parameters ==========================
+
   //  'GlobalKey' allows us to interact with a 'widget' from inside your code,
   //   so now i can access all the data in the form with this variable.
   final _formHandler = GlobalKey<FormState>();

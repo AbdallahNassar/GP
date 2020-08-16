@@ -7,8 +7,7 @@
     {
       "name": "Flutter",
       "request": "launch",
-      "type": "dart",
-      "args": ["--enable-software-rendering", "-d", "all"]
+      "type": "dart"
     }
   ]
 }

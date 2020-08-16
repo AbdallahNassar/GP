@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'dart:io';
 
 void main(List<String> args) {
-  var x = ValueKey(3);
+  var x = [1, 2];
+  x[1] = 3;
   print(x);
 }

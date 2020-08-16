@@ -57,6 +57,8 @@ dependencies:
   # flare_flutter: ^2.0.3
   # pretty self explanatory .. ok mr smarty pants xD.
   image_cropper: ^1.2.3
+  translator: ^0.1.5
+  dropdownfield: ^1.0.3
 
 dev_dependencies:
   flutter_test:
