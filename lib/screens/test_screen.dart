@@ -38,10 +38,13 @@ class _TestScreenState extends State<TestScreen> {
     print(jsonResponse['result']);
   }
 
-  void trial() async {
-    print('in trial');
-    // var cancel = CancelableOperation
-    print('out trial');
+  void trial() {
+    var x = 'الحمدلله';
+    setState(() {
+      widget.text = x;
+    });
+    print(x); // String body = utf8.decode(x);
+    // print(body);
   }
 
   void brain() {}

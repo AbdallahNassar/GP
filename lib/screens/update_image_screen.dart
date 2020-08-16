@@ -108,13 +108,9 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
         url,
         body: bytesImg,
         headers: {"Accept": "application/json"},
-      ).timeout(
-        Duration(seconds: 30),
       );
 
-      var jsonResponse = json.decode(response.body)['result'];
-      // widget.apiExtText = jsonResponse.join(' ');
-      print(' @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ finished flask API');
+      List<dynamic> jsonResponse = json.decode(response.body)['result'];
       setState(() {
         widget.apiExtText = jsonResponse.join(' ');
       });
