@@ -72,7 +72,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
             extractedText: '',
             imageURI:
                 widget.chosenPic != null ? widget.chosenPic.absolute.path : '',
-            title: 'image1',
+            title: '',
             isFavourite: false);
       _isInitState = false;
       // call the API with the image with a different thread to start the processing to save time
@@ -252,7 +252,6 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
   Picture _mOverWritepicture(
       {id, extractedText, imageUrl, title, isFavourite, location}) {
     // I don't update the exisiting picture cuz it's values are all final, so create a new one.
-    if (extractedText != null) print('FLAAAAASK OVERWIIIIIIIIIITE');
     return Picture(
       id: id != null ? id : _pictureTemplate.id,
       extractedText: extractedText != null
@@ -349,8 +348,8 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                       // if it's NOT NULL then I pressed on the 'Edit' Button And I should fetch the existing
                       // picture's values.
                       enabled: (widget.apiExtText != null) ? true : false,
-                      initialValue: _pictureTemplate == null
-                          ? null
+                      initialValue: _pictureTemplate.title == ''
+                          ? 'image1'
                           : _pictureTemplate.title,
                       keyboardType: TextInputType.text,
                       style: Theme.of(context).textTheme.headline6,
@@ -376,7 +375,8 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                     ),
                     // text field for the extracted text
                     // if (widget.alreadySentAPIRequest == true && widget.apiExtText
-                    (widget.apiExtText == null)
+                    (widget.apiExtText == null &&
+                            _pictureTemplate.extractedText == '')
                         ? FutureBuilder(
                             future: flaskAPI(_arModel),
                             builder: (_, dataSnapShot) {
@@ -444,7 +444,8 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                             })
                         : TextFormField(
                             style: Theme.of(context).textTheme.headline6,
-                            initialValue: widget.apiExtText,
+                            initialValue: widget.apiExtText ??
+                                _pictureTemplate.extractedText,
                             //     ? 'READ ONLY'
                             //     : _pictureTemplate.extractedText,
                             keyboardType: TextInputType.multiline,
@@ -469,8 +470,8 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          width: 100,
-                          height: 100,
+                          width: 140,
+                          height: 140,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(

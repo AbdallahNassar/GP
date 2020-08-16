@@ -100,7 +100,7 @@ class _LocationInputState extends State<LocationInput> {
         // show a progrss indicator while I fetch the location from Maps API.
 
         Container(
-          height: 170,
+          height: 120,
           width: double.infinity,
           alignment: Alignment.center,
           decoration: BoxDecoration(
