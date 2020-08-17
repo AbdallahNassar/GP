@@ -35,8 +35,11 @@ class PictureSpeedDial extends StatelessWidget {
       children: [
         // each one is a floating action button.. from bottom to top
         SpeedDialChild(
-          onTap: () => Navigator.of(context)
-              .pushNamed(UpdatePictureScreen.routeName, arguments: pictureData),
+          onTap: () async {
+            await Navigator.of(context).pushNamed(UpdatePictureScreen.routeName,
+                arguments: pictureData);
+            Navigator.of(context).pop();
+          },
           child: Icon(
             Icons.edit,
             size: 24,

@@ -101,7 +101,9 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
       var identifier = (_arModel) ? '/api/ar' : 'api/en';
       print(
           ' @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ inside flask API $identifier');
-      final url = 'http://23.99.224.142:5000$identifier';
+      final url = 'http://52.165.146.57:5000$identifier';
+      // final url = 'http://40.122.144.111:5000$identifier';
+      // final url = 'http://23.99.224.142:5000$identifier';
 
       var bytesImg = await widget.chosenPic.readAsBytes();
 
@@ -116,7 +118,8 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
         widget.apiExtText = jsonResponse.join(' ');
       });
     } catch (e) {
-      print('error in flask apppi');
+      print('error at flask');
+      widget.apiExtText = 'Something Went Wrong.';
     }
     // /api/en
   }
@@ -344,7 +347,10 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                       //  then I pressed on the 'New' Icon and all the form fields should be empty ..
                       // if it's NOT NULL then I pressed on the 'Edit' Button And I should fetch the existing
                       // picture's values.
-                      enabled: (widget.apiExtText != null) ? true : false,
+                      enabled: (widget.apiExtText != null ||
+                              _pictureTemplate.id != null)
+                          ? true
+                          : false,
                       initialValue: _pictureTemplate.title == ''
                           ? 'image1'
                           : _pictureTemplate.title,
@@ -518,8 +524,10 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                           color: Theme.of(context).primaryColor.withAlpha(170),
                           child: Text('Submit',
                               style: TextStyle(fontWeight: FontWeight.bold)),
-                          onPressed:
-                              widget.apiExtText == null ? null : _mSubmitForm,
+                          onPressed: (widget.apiExtText != null ||
+                                  _pictureTemplate.id != null)
+                              ? _mSubmitForm
+                              : null,
                         ),
                         SizedBox(
                           width: 55,

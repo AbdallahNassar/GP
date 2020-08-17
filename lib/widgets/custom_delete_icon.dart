@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:ScaniT/screens/home_screen.dart';
+
 import '../helpers/globals.dart';
 
 import '../providers/picture_provider.dart';
@@ -136,6 +140,10 @@ class CustomDeleteIcon extends StatelessWidget {
                                 'finished trying to resotre @ custom_dele_icon');
                           }),
                 ));
+                Future.delayed(Duration(seconds: 2), () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(HomeScreen.routeName);
+                });
               }
             }
           }),
