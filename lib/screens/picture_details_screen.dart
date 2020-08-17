@@ -286,53 +286,32 @@ class _PictureDetailsState extends State<PictureDetails> {
                       SizedBox(
                         height: 7.0,
                       ),
-                      if (widget.translationText != null)
-                        FutureBuilder(
-                          // future: goTranslate(text, lang),
-                          builder: (_, dataSnapShot) {
-                            if (dataSnapShot.connectionState ==
-                                ConnectionState.waiting) {
-                              return CircularProgressIndicator();
-                            } else if (dataSnapShot.hasError) {
-                              Scaffold.of(context).hideCurrentSnackBar();
-                              Scaffold.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Container(
-                                    margin: const EdgeInsets.only(
-                                      left: 20,
-                                    ),
-                                    child: Text('Something Went Wrong.'),
-                                  ),
-                                  behavior: SnackBarBehavior.floating,
-                                  duration: Duration(seconds: 2),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                              );
-                            } else {
-                              return Container(
-                                padding: const EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .primaryColorLight
-                                      .withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(50),
-                                  border: Border.all(
-                                    color: Colors.black54,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: Text(
-                                  widget.translationText,
-                                  style: TextStyle(color: Colors.black),
-                                  textAlign: TextAlign.center,
-                                  softWrap: true,
-                                ),
-                              );
-                            }
-                          },
+
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.linearToEaseOut,
+                        height: (widget._selected == null) ? 0 : 70,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context)
+                              .primaryColorLight
+                              .withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            color: Colors.black54,
+                            width: 2,
+                          ),
                         ),
+                        child: widget.translationText == null
+                            ? null
+                            : Text(
+                                widget.translationText,
+                                style: TextStyle(color: Colors.black),
+                                textAlign: TextAlign.center,
+                                softWrap: true,
+                              ),
+                      ),
+
                       SizedBox(
                         height: 10,
                       ),

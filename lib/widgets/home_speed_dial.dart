@@ -13,9 +13,12 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../screens/update_image_screen.dart';
 
 class HomeSpeedDial extends StatelessWidget {
-  // ========================== class parameters ==========================
+  final identifier;
+  HomeSpeedDial(this.identifier);
+  //========================== class parameters ==========================
   final _imagePicker = ImagePicker();
   // ========================== class methods ==========================
+
   Future<File> _mGetImage({picSource}) async {
     try {
       // pickedImage = imageFile in video
@@ -95,6 +98,9 @@ class HomeSpeedDial extends StatelessWidget {
         // each one is a floating action button.. from bottom to top
         SpeedDialChild(
           onTap: () async {
+            if (identifier == null) {
+              return;
+            }
             // call the method to get the user to provide an image through cam/gallery
             final chosenPicture =
                 await _mGetImage(picSource: ImageSource.camera);
@@ -122,6 +128,9 @@ class HomeSpeedDial extends StatelessWidget {
 
         SpeedDialChild(
           onTap: () async {
+            if (identifier == null) {
+              return;
+            }
             // call the method to get the user to provide an image through cam/gallery
             final chosenPicture =
                 await _mGetImage(picSource: ImageSource.gallery);
@@ -131,6 +140,7 @@ class HomeSpeedDial extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => UpdatePictureScreen(
                     chosenPic: chosenPicture,
+                    identifier: identifier,
                   ),
                 ),
               );

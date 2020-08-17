@@ -20,8 +20,9 @@ class UpdatePictureScreen extends StatefulWidget {
   // for some reason it keeps resending it
   var apiExtText;
   var inApi = false;
+  final identifier;
   // ========================== class consturctor ==========================
-  UpdatePictureScreen({this.chosenPic});
+  UpdatePictureScreen({this.chosenPic, this.identifier});
   // ======================================================================
   @override
   _UpdatePictureScreenState createState() => _UpdatePictureScreenState();
@@ -94,14 +95,13 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
   }
 
   // ========================== class methods ==========================
-  Future<void> flaskAPI(bool identifier) async {
+  Future<void> flaskAPI() async {
     if (widget.apiExtText != null || widget.inApi == true) return '';
     try {
       widget.inApi = true;
-      var identifier = (_arModel) ? '/api/ar' : 'api/en';
       print(
-          ' @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ inside flask API $identifier');
-      final url = 'http://52.165.146.57:5000$identifier';
+          ' @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ inside flask API ${widget.identifier}');
+      final url = 'http://52.165.146.57:5000${widget.identifier}';
       // final url = 'http://40.122.144.111:5000$identifier';
       // final url = 'http://23.99.224.142:5000$identifier';
 
@@ -381,7 +381,7 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                     (widget.apiExtText == null &&
                             _pictureTemplate.extractedText == '')
                         ? FutureBuilder(
-                            future: flaskAPI(_arModel),
+                            future: flaskAPI(),
                             builder: (_, dataSnapShot) {
                               if (dataSnapShot.connectionState ==
                                   ConnectionState.waiting) {
@@ -470,29 +470,30 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          width: 140,
-                          height: 140,
+                          width: 160,
+                          height: 160,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(
                               color: Colors.grey,
                             ),
                             image: (widget.chosenPic == null)
-                                ? null
+                                ? DecorationImage(
+                                    image: FileImage(
+                                      File(_pictureTemplate.imageURI),
+                                    ),
+                                  )
                                 : DecorationImage(
                                     image: FileImage(
-                                      widget.chosenPic,
+                                      (widget.chosenPic),
                                     ),
                                   ),
                           ),
                         ),
-                        SizedBox(
-                          width: 30,
-                        ),
-                        ChoiceBox(_arModel, _enModel),
                       ],
                     ),
 
@@ -502,9 +503,10 @@ class _UpdatePictureScreenState extends State<UpdatePictureScreen> {
                     LocationInput(
                         onSelectPlace: _selectPlace,
                         initialLocation: _pictureTemplate.location),
-                    SizedBox(
-                      height: deviceSize.height * 0.025,
-                    ),
+                    if (_isLoading)
+                      SizedBox(
+                        height: deviceSize.height * 0.01,
+                      ),
                     if (_isLoading)
                       CircularProgressIndicator(
                         backgroundColor: Theme.of(context).primaryColor,

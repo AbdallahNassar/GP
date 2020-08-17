@@ -65,7 +65,7 @@ class EmptyList extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .subtitle2
-                  .copyWith(color: Colors.grey),
+                  .copyWith(color: Colors.grey, fontSize: 16),
             ),
           ),
         ],

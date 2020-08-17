@@ -11,15 +11,18 @@ import '../widgets/custom_app_drawer.dart';
 import '../widgets/home_grid.dart';
 import '../providers/authentication_provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   // ========================== class parameters ==========================
   static const routeName = '/home-page';
   // var seeFav = false;
-  // ========================== class constructor ==========================
-  const HomeScreen({Key key}) : super(key: key);
-  // =========================== class methods ============================
-  // 'async' to return a 'future' and 'awaits' to allow that that I can wait for this
-  //  to finish executing before I move onto the next code .
+  var _selected;
+  HomeScreen({Key key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   Future<void> _mReFetchData(context) async {
     try {
       print('fetching form home');
@@ -46,22 +49,15 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
-  // ======================================================================
-  // '_' at the beginning of the name to indicate that this is a private method
-  // and should not be called from outside of this class.
-  // void _handleLogout(context) {
-  //   Navigator.of(context).pushReplacementNamed(WelcomeScreen.routeName);
-  //   final authProvider = Provider.of<Authentication>(context, listen: false);
-  //   authProvider.mLogOut();
-  // }
-  // ======================================================================
-
   @override
   Widget build(BuildContext context) {
     // ========================== class parameters ==========================
     // final GlobalKey<ScaffoldState> homeScaffoldKey =
     //     new GlobalKey<ScaffoldState>();
-
+    List<Map<String, String>> _langMap = [
+      {'lang': 'Arabic       ', 'api': '/api/ar'},
+      {'lang': 'English       ', 'api': '/api/en'},
+    ];
     // go get device dimensions
     final deviceSize = MediaQuery.of(context).size;
     // to get user name and picture.
@@ -85,18 +81,24 @@ class HomeScreen extends StatelessWidget {
           // 'flexiblespace' to change the positiong of the items in it freely.
           flexibleSpace: Builder(
             builder: (context) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+              margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 45),
               child: Row(
                 // crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   InkWell(
+                    borderRadius: BorderRadius.circular(15),
                     onTap: () => Scaffold.of(context).openDrawer(),
-                    child: SvgPicture.asset(
-                      'assets/icons/menu.svg',
+                    child: Container(
+                      padding: const EdgeInsets.all(15),
+                      child: SvgPicture.asset(
+                        'assets/icons/menu.svg',
+                      ),
                     ),
                   ),
-                  // Spacer(),
+                  Spacer(
+                    flex: 12,
+                  ),
                   // // to rotate the logout icon
                   // RotationTransition(
                   //   turns: AlwaysStoppedAnimation(15 / 360),
@@ -153,7 +155,7 @@ class HomeScreen extends StatelessWidget {
                   //   ),
                   // ),
                   SizedBox(
-                    width: 8.0,
+                    width: 10.0,
                   ),
                   CircleAvatar(
                     backgroundImage: authProvider.userPicURI ==
@@ -162,6 +164,9 @@ class HomeScreen extends StatelessWidget {
                         // to handle some error with user pic
                         : NetworkImage(authProvider.userPicURI ??
                             'https://img.favpng.com/7/0/8/scalable-vector-graphics-avatar-learning-icon-png-favpng-FYEDPnnsy3wDHTyMzJa3qhE7f.jpg'),
+                  ),
+                  Spacer(
+                    flex: 1,
                   ),
                 ],
               ),
@@ -193,8 +198,17 @@ class HomeScreen extends StatelessWidget {
                             text: 'Hey ${authProvider.userName},\n',
                             style: Theme.of(context).textTheme.headline2),
                         TextSpan(
-                            text: 'Seatch for a picture with it\'s title',
-                            style: Theme.of(context).textTheme.subtitle2),
+                          text: 'Choose a language to ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2
+                              .copyWith(fontSize: 18),
+                        ),
+                        TextSpan(
+                          text: 'ScaniT',
+                          style: Theme.of(context).textTheme.subtitle2.copyWith(
+                              fontSize: 19, fontWeight: FontWeight.bold),
+                        ),
                       ],
                     ),
                   ),
@@ -208,22 +222,50 @@ class HomeScreen extends StatelessWidget {
                       color: Color(0xFFF5F5F7),
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Spacer(),
-                        SvgPicture.asset('assets/icons/search.svg'),
-                        Spacer(),
+                        Spacer(
+                          flex: 1,
+                        ),
                         Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Search in Pictures',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xFFA0A5BD),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 1,
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: ButtonTheme(
+                              alignedDropdown: true,
+                              child: DropdownButton<String>(
+                                isDense: true,
+                                hint: widget._selected == null
+                                    ? Text("Select The Language               ")
+                                    : Text(_langMap.firstWhere((element) =>
+                                        element['api'] ==
+                                        widget._selected)['lang']),
+                                value: widget._selected,
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    widget._selected = newValue;
+                                  });
+
+                                  print(widget._selected);
+                                },
+                                items: _langMap.map((map) {
+                                  return DropdownMenuItem<String>(
+                                    value: map['api'],
+                                    // value: _mySelection,
+                                    child: Container(
+                                        margin: EdgeInsets.only(left: 10),
+                                        child: Text(map['lang'])),
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           ),
                         ),
-                        Spacer(flex: 7),
+                        Spacer(
+                          flex: 7,
+                        ),
                       ],
                     )),
                 // TO ONLY REBUILD THIS TO SHOW THE FAVS.
@@ -236,7 +278,8 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
 
-      floatingActionButton: HomeSpeedDial(),
+      floatingActionButton:
+          (widget._selected == null) ? null : HomeSpeedDial(widget._selected),
     );
   }
 }
